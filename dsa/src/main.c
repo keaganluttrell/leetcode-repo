@@ -1,22 +1,29 @@
 #include <stdio.h>
+// #include <stdlib.h>
 
-#include "reverse-string.h"
+#include "arrays-strings.h"
 
 int main(int charc, char *argv[]) {
 
-    char test_str1[] = "one";
-    char test_str2[] = "dude";
+    int nums[] = {1, 0, 1};
+    int numsSize = 3;
+    int k = 0;
 
-    printf("before\n");
-    printf("test_str1: %s\n", test_str1);
-    printf("test_str2: %s \n", test_str2);
+    int result = longestOnes(nums, numsSize, k);
+    printf("assert %d is 1\n", result);
 
-    reverse_string(test_str1, sizeof(test_str1) - 1);
-    reverse_string(test_str2, sizeof(test_str2) - 1);
+    int nums2[] = {0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1};
+    //                         L                       L
+    int numsSize2 = 19;
+    int k2 = 3;
+    int result2 = longestOnes(nums2, numsSize2, k2);
+    printf("assert %d is 10\n", result2);
 
-    printf("after\n");
-    printf("test_str1: %s\n", test_str1);
-    printf("test_str2: %s \n", test_str2);
+    int nums3[] = {0, 0, 1};
+    int numsSize3 = 3;
+    int k3 = 0;
+    int result3 = longestOnes(nums3, numsSize3, k3);
+    printf("assert %d is 1\n", result3);
 
     return 0;
 }
