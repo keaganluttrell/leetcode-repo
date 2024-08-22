@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -284,9 +285,9 @@ int minStartValue(int *nums, int numsSize) {
 int *getAverages(int *nums, int numsSize, int k, int *returnSize) {
     *returnSize = numsSize;
     int *result = (int *)malloc(sizeof(int) * *returnSize);
-    int *sums = (int *)malloc(sizeof(int) * *returnSize);
+    uint64_t *sums = (uint64_t *)malloc(sizeof(uint64_t) * *returnSize);
 
-    int sum = 0;
+    uint64_t sum = 0;
 
     for (int i = 0; i < numsSize; i++) {
         sum += nums[i];
