@@ -1,29 +1,21 @@
 #include <stdio.h>
-// #include <stdlib.h>
+#include <stdlib.h>
 
 #include "arrays-strings.h"
 
 int main(int charc, char *argv[]) {
 
-    int nums[] = {1, 0, 1};
-    int numsSize = 3;
-    int k = 0;
+    int nums[] = {7, 4, 3, 9, 1, 8, 5, 2, 6};
+    int expected[] = {-1, -1, -1, 5, 4, 4, -1, -1, -1};
+    int sz = sizeof(nums) / sizeof(nums[0]);
+    int k = 1;
+    int return_sz;
+    int *result = getAverages(nums, sz, k, &return_sz);
 
-    int result = longestOnes(nums, numsSize, k);
-    printf("assert %d is 1\n", result);
-
-    int nums2[] = {0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1};
-    //                         L                       L
-    int numsSize2 = 19;
-    int k2 = 3;
-    int result2 = longestOnes(nums2, numsSize2, k2);
-    printf("assert %d is 10\n", result2);
-
-    int nums3[] = {0, 0, 1};
-    int numsSize3 = 3;
-    int k3 = 0;
-    int result3 = longestOnes(nums3, numsSize3, k3);
-    printf("assert %d is 1\n", result3);
-
+    printf("expected , actual\n");
+    for (int i = 0; i < return_sz; i++) {
+        printf("i:%d, %d , %d\n", i, expected[i], result[i]);
+    }
+    free(result);
     return 0;
 }

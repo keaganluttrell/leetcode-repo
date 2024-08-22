@@ -178,3 +178,132 @@ int longestOnes(int *nums, int numsSize, int k) {
     }
     return right - left;
 }
+
+/*
+ * Define the Problem: Given an array nums,
+ * we define a running sum of an array as
+ * runnginsum[i] = sum(num[0]..sum[i]);
+ *
+ * returning sum of sums
+ *
+ * Constraints:
+ * 1 <= nums.length <= 1000
+ * -10^6 <= nums[i] <= 10^6
+ *
+ * Inputs: int array[], int sz, return ptr
+ *
+ * Outputs: int array[] == running sum per index
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+int *runningSum(int *nums, int numsSize, int *returnSize) {
+
+    *returnSize = numsSize;
+    int *arr = (int *)malloc(sizeof(int) * *returnSize);
+
+    arr[0] = nums[0];
+
+    for (int i = 1; i < numsSize; i++) {
+        arr[i] = arr[i - 1] + nums[i];
+    }
+
+    return arr;
+}
+
+/*
+ * Define the Problem:
+ * Given an array of ints, you start with an initial positive value.
+ * (startValue) in each iteration, calculate the step by step sum of startValue
+ * plus elements in nums from left to right.
+ *
+ * return the minimum positive value of startValue such that the step by step
+ * sum is never less than 1
+ *
+ * Constraints:
+ * 1 <= nums.length <= 100
+ * -100 <= nums[i] <= 100
+ *
+ * Inputs: Array of Int's
+ *
+ * Outputs: Int (min positive value of start value)
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+int minStartValue(int *nums, int numsSize) {
+    int max_neg_sum = 0;
+    int sum = 0;
+
+    for (int i = 0; i < numsSize; i++) {
+        sum += nums[i];
+        if (sum < max_neg_sum) {
+            max_neg_sum = sum;
+        }
+    }
+
+    return (max_neg_sum * -1) + 1;
+}
+
+/*
+ * Define the Problem:
+ * k-radius avg of a subarray of nums centered at a given index (i)
+ * The radius is index range (i-k) to (i+k) inclusive
+ *
+ * Goal is to build an array avgs of length 'n' where avgs[i] is the k k-radius
+ * average for the subarray centered at index i;
+ *
+ * The average of x is the sum of k radius(i) divided by x, using int division.
+ * Not really a problem for c.
+ *
+ * Constraints:
+ * n == nums.length
+ * 1 <= n <= 10^5
+ * 0 <= nums[i], k <= 10^5
+ *
+ * Inputs: int array, int array_sz, int k,  int return_sz
+ *
+ * Outputs: int array, with outputs of the averages at the given index.
+ *
+ * Edge Cases: if there are less than k elements to the left or right of
+ * a given index (i) return -1
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+int *getAverages(int *nums, int numsSize, int k, int *returnSize) {
+    *returnSize = numsSize;
+    int *result = (int *)malloc(sizeof(int) * *returnSize);
+    int *sums = (int *)malloc(sizeof(int) * *returnSize);
+
+    int sum = 0;
+
+    for (int i = 0; i < numsSize; i++) {
+        sum += nums[i];
+        sums[i] = sum;
+    }
+
+    for (int i = 0; i < numsSize; i++) {
+        if (i >= k && i + k < numsSize) {
+            if (i - k - 1 < 0) {
+                result[i] = sums[i + k] / (k + k + 1);
+            } else {
+                result[i] = (sums[i + k] - sums[i - k - 1]) / (k + k + 1);
+            }
+        } else {
+            result[i] = -1;
+        }
+    }
+    free(sums);
+    return result;
+}
