@@ -73,4 +73,108 @@ bool checkIfPangram(char *sentence) {
  * Analyze Performance
  * Refactor to Optimal Solution
  */
-int missingNumber(int *nums, int numsSize) { return 0; }
+int missingNumber(int *nums, int numsSize) {
+
+    int max = numsSize;
+    int i = 0;
+    while (i < numsSize) {
+        if (nums[i] == numsSize) {
+            max = i;
+            i++;
+        } else if (nums[i] == i) {
+            i++;
+        } else {
+            int x = nums[i];
+            nums[i] = nums[x];
+            nums[x] = x;
+        }
+    }
+    return max;
+}
+
+/*
+ * Define the Problem: Given an int array, count how many elements of 'x'
+ * there are, such tat x + 1 is also in arr. Count diplicates separately
+ *
+ * Inputs: Int Array, Int Sz
+ *
+ * Outputs: Int (count)
+ * To increase the counter
+ * An element's value + 1 must exist in the array.
+ * ex: 1, 2 : 1 + 1 = 2; [1,2]; returns 1
+ * ex [1,2,3]: 1+1 = 2, 2 +1 = 3, returns 2
+ * ex [0,2,4]; returns 0;
+ *
+ * Constraints:
+ * 1 <= array.length <= 1000
+ * 0 < arr[i] <= 1000
+ *
+ * Edge Cases:
+ *  No Negative numbers
+ *  No empty arrays;
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ *
+ * {1,2,3}
+ */
+
+struct map_entry {
+    int id;
+    int value;
+    UT_hash_handle hh;
+};
+
+struct map_entry *numbers_entry = NULL;
+
+void add_number(int key, int value) {
+    struct map_entry *s;
+
+    HASH_FIND_INT(numbers_entry, &key, s);
+
+    if (s == NULL) {
+        s = malloc(sizeof(*s));
+        s->id = key;
+        s->value = value;
+        HASH_ADD_INT(numbers_entry, id, s);
+    } else {
+        s->value = value;
+    }
+}
+
+void clean_map() {
+    struct map_entry *i, *x;
+
+    HASH_ITER(hh, numbers_entry, i, x) {
+        HASH_DEL(numbers_entry, i);
+        free(i);
+    }
+}
+
+struct map_entry *find_number(int id) {
+    struct map_entry *s;
+
+    HASH_FIND_INT(numbers_entry, &id, s);
+    return s;
+}
+
+int countElements(int *arr, int arrSize) {
+
+    int ct = 0;
+
+    for (int i = 0; i < arrSize; i++) {
+        add_number(arr[i], 1);
+    }
+
+    for (int i = 0; i < arrSize; i++) {
+        struct map_entry *e = find_number(arr[i] + 1);
+        if (e != NULL) {
+            ct++;
+        }
+    }
+
+    clean_map();
+    return ct;
+};
