@@ -178,3 +178,201 @@ int countElements(int *arr, int arrSize) {
     clean_map();
     return ct;
 };
+
+/*
+ * Define the Problem: given a 2d int array, where int array i [winner, loser]
+ * return a list of size 2, where first list is of all players that have not
+ * lost any matches. a list of players that have lost only one match
+ *
+ * Constraints:
+ * 1 < matches.length < 10^5
+ * matches[i].length == 2
+ * 1 < winner, loser < 10^5
+ * winner != loser
+ * matches[1] are unique. No rematches.
+ *
+ * Inputs: Int[N][2];
+ *
+ * Outputs: int[2][M];
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+
+struct player_entry {
+    int id;
+    int value;
+    UT_hash_handle hh;
+};
+
+struct player_entry *p_entry = NULL;
+
+void init_player(int id) {
+    struct player_entry *s;
+
+    HASH_FIND_INT(p_entry, &id, s);
+
+    if (s == NULL) {
+        s = malloc(sizeof(*s));
+        s->id = id;
+        s->value = 0;
+        HASH_ADD_INT(p_entry, id, s);
+    }
+}
+
+struct player_entry *find_player(int id) {
+    struct player_entry *s;
+
+    HASH_FIND_INT(p_entry, &id, s);
+    return s;
+}
+
+void add_loss(int id) {
+    struct player_entry *s;
+
+    HASH_FIND_INT(p_entry, &id, s);
+
+    if (s != NULL) {
+        s->value++;
+    }
+}
+
+void clean_players() {
+    struct player_entry *i, *x;
+
+    HASH_ITER(hh, p_entry, i, x) {
+        HASH_DEL(p_entry, i);
+        free(i);
+    }
+}
+
+void insertion_sort(int *arr, int idx) {
+    while (idx > 0 && arr[idx] < arr[idx - 1]) {
+        if (arr[idx] < arr[idx - 1]) {
+            int x = arr[idx];
+            arr[idx] = arr[idx - 1];
+            arr[idx - 1] = x;
+            idx--;
+        }
+    }
+}
+
+int **findWinners(int matches[][2], int matchesSize, int *matchesColSize,
+                  int *returnSize, int **returnColumnSizes) {
+
+    *returnColumnSizes = (int *)malloc(2 * sizeof(int));
+    if (*returnColumnSizes == NULL) {
+        return NULL;
+    }
+
+    for (int i = 0; i < matchesSize; i++) {
+        int winner = matches[i][0];
+        int loser = matches[i][1];
+
+        if (find_player(winner) == NULL) {
+            init_player(winner);
+        }
+
+        if (find_player(loser) == NULL) {
+            init_player(loser);
+        }
+
+        add_loss(loser);
+    }
+
+    struct player_entry *e;
+    (*returnColumnSizes)[0] = 0;
+    (*returnColumnSizes)[1] = 0;
+
+    for (e = p_entry; e != NULL; e = e->hh.next) {
+        if (e->value == 0) {
+            (*returnColumnSizes)[0]++;
+        } else if (e->value == 1) {
+            (*returnColumnSizes)[1]++;
+        }
+    }
+
+    int **output = (int **)malloc(2 * sizeof(int *));
+    output[0] = (int *)malloc((*returnColumnSizes)[0] * sizeof(int));
+    output[1] = (int *)malloc((*returnColumnSizes)[1] * sizeof(int));
+    if (output[0] == NULL || output[1] == NULL) {
+        free(output[0]);
+        free(output[1]);
+        free(output);
+        return NULL;
+    }
+
+    int a = 0, b = 0;
+    for (e = p_entry; e != NULL; e = e->hh.next) {
+        if (e->value == 0) {
+            output[0][a] = e->id;
+            insertion_sort(output[0], a);
+            a++;
+        } else if (e->value == 1) {
+            output[1][b] = e->id;
+            insertion_sort(output[1], b);
+            b++;
+        }
+    }
+
+    *returnSize = 2;
+    clean_players();
+    return output;
+}
+
+/*
+ * Define the Problem: Given an integer array nums,
+ * return the largest integer that only occurs once.
+ *
+ * if no integer occurs once, return -1.
+ *
+ * Constraints:
+ * 1< nums.length < 2000
+ * 0<nums[i]<=1000
+ *
+ *
+ * Inputs: int array, int sz
+ *
+ * Outputs: int (-1:1000)
+ *
+ * Edge Cases:
+ *
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+
+int largestUniqueNumber(int *nums, int numsSize) {
+    unsigned short bucket[1001] = {0};
+    for (int i = 0; i < numsSize; ++i)
+        ++bucket[nums[i]];
+    for (int i = 1000; 0 <= i; --i)
+        if (bucket[i] == 1)
+            return i;
+
+    return -1;
+}
+
+/*
+ * Define the Problem:
+ *
+ * Constraints:
+ *
+ * Inputs:
+ *
+ * Outputs:
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+int maxNumberOfBalloons(char *text) {}
