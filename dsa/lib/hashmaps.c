@@ -360,13 +360,20 @@ int largestUniqueNumber(int *nums, int numsSize) {
 }
 
 /*
- * Define the Problem:
+ * Define the Problem: Given a string text, you want to use
+ * the characters of text to form as many instances of the
+ * word balloon as possible.  You can use each character in
+ * text at most once.  Return the max number of instances
+ * that can be formed.
  *
  * Constraints:
+ * 1<=text.length<= 10^4
+ * text is lowercase english letters guaranteed
  *
- * Inputs:
+ * Inputs: string
  *
- * Outputs:
+ * Outputs: int -- max num of instances that can be formed for
+ * balloon
  *
  * Edge Cases:
  *
@@ -375,4 +382,44 @@ int largestUniqueNumber(int *nums, int numsSize) {
  * Analyze Performance
  * Refactor to Optimal Solution
  */
-int maxNumberOfBalloons(char *text) {}
+//
+// a = 0;
+// b = 1;
+// l = 11;
+// o = 14;
+// n = 13;
+
+int maxNumberOfBalloons(char *text) {
+    int letters[26] = {0};
+    for (int i = 0; i < strlen(text); ++i) {
+        ++letters[text[i] - 'a'];
+    }
+    // l
+    letters[11] /= 2;
+    // n
+    letters[14] /= 2;
+
+    int min = 10000;
+
+    if (letters[0] < min) {
+        min = letters[0];
+    }
+
+    if (letters[1] < min) {
+        min = letters[1];
+    }
+
+    if (letters[11] < min) {
+        min = letters[11];
+    }
+
+    if (letters[13] < min) {
+        min = letters[13];
+    }
+
+    if (letters[14] < min) {
+        min = letters[14];
+    }
+
+    return min;
+}
