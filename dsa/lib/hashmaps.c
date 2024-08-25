@@ -423,3 +423,49 @@ int maxNumberOfBalloons(char *text) {
 
     return min;
 }
+
+/*
+ * Define the Problem: find a contiguos subarray of 0s and 1s
+ *
+ * Constraints:
+ * 1<= nums.length
+ * nums[i] == 0 or 1
+ *
+ * Inputs: Array and size
+ *
+ * Outputs: int
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ *
+ * length can't be max if odd
+ * count
+ *
+ *
+ */
+int findMaxLength(int *nums, int sz) {
+    int arr[sz * 2 + 1];
+    for (int i = 0; i < sz * 2 + 1; ++i) {
+        arr[i] = -2;
+    }
+
+    arr[sz] = -1;
+    int max = 0, ct = 0;
+
+    for (int i = 0; i < sz; ++i) {
+        nums[i] == 1 ? ct++ : ct--;
+        if (arr[ct + sz] >= -1) {
+            if ((i - arr[ct + sz]) > max) {
+                max = (i - arr[ct + sz]);
+            }
+        } else {
+            arr[ct + sz] = i;
+        }
+    }
+
+    return max;
+}

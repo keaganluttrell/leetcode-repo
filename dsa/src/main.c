@@ -5,21 +5,21 @@
 #include "hashmaps.h"
 int main(int argc, char *argv[]) {
 
-    char *text = "nlaebolko";
-    int expected = 1;
-    int actual = maxNumberOfBalloons(text);
+    int arr[] = {0, 1};
+    int expected = 2;
+    int actual = findMaxLength(arr, 2);
 
     printf("e: %d, a: %d\n", expected, actual);
 
-    char *text2 = "loonbalxballpoon";
+    int arr2[] = {0, 1, 0};
     int expected2 = 2;
-    int actual2 = maxNumberOfBalloons(text2);
+    int actual2 = findMaxLength(arr2, 2);
 
     printf("e: %d, a: %d\n", expected2, actual2);
 
-    char *text3 = "leetcode";
-    int expected3 = 0;
-    int actual3 = maxNumberOfBalloons(text3);
+    int arr3[] = {1, 1, 0, 0};
+    int expected3 = 4;
+    int actual3 = findMaxLength(arr3, 4);
 
     printf("e: %d, a: %d\n", expected3, actual3);
 
