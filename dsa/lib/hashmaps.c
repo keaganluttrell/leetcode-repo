@@ -469,3 +469,42 @@ int findMaxLength(int *nums, int sz) {
 
     return max;
 }
+
+/*
+ * Define the Problem: Confirm if a ransom note can be constructed from a given
+ * magazine.
+ *
+ * Constraints:
+ * 1 <= note.len, mag.len <= 10^5
+ * note and mag are all lowercase english letters
+ *
+ * Inputs: string for ransomNote and a string for magazine.
+ *
+ * Outputs: bool
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+
+bool canConstruct(char *ransomNote, char *magazine) {
+    int letters[26] = {0};
+    int i;
+
+    for (i = 0; i < strlen(ransomNote); ++i) {
+        ++letters[ransomNote[i] - 'a'];
+    }
+    for (i = 0; i < strlen(magazine); ++i) {
+        --letters[magazine[i] - 'a'];
+    }
+
+    for (i = 0; i < 26; ++i) {
+        if (letters[i] > 0) {
+            return false;
+        }
+    }
+    return true;
+}
