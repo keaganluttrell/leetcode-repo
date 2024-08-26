@@ -6,13 +6,13 @@
 
 int main(int argc, char *argv[]) {
 
-    char *notes[] = {"a", "aa", "aa"};
-    char *magazines[] = {"b", "ab", "aab"};
-    bool expected[] = {false, false, true};
-    bool actual;
+    char *s1[] = {"aA", "z"};
+    char *s2[] = {"aAAbbb", "ZZ"};
+    int expected[] = {3, 0};
+    int actual;
 
-    for (int i = 0; i < 3; ++i) {
-        actual = canConstruct(notes[i], magazines[i]);
+    for (int i = 0; i < 2; ++i) {
+        actual = numJewelsInStones(s1[i], s2[i]);
         printf("e: %d, a: %d\n", expected[i], actual);
     }
 

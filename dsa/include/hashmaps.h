@@ -11,4 +11,5 @@ int largestUniqueNumber(int *nums, int numsSize);
 int maxNumberOfBalloons(char *text);
 int findMaxLength(int *nums, int numsSize);
 bool canConstruct(char *ransomNote, char *magazine);
+int numJewelsInStones(char *jewels, char *stones);
 #endif

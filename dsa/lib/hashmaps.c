@@ -508,3 +508,46 @@ bool canConstruct(char *ransomNote, char *magazine) {
     }
     return true;
 }
+
+/*
+ * Define the Problem: You're given string JEWELS
+ * representing the types of STONES that are JEWELS.
+ * STONES represents the stones that you have. Each
+ * char in STONES is a type of STONE you have. You
+ * want to know how many STONES are JEWELS
+ *
+ * Constraints:
+ * 1<=jewels.len, stones.len<=50
+ * jewels and stones only are english letters (caps and no caps)
+ * jewels are unique.
+ *
+ * Inputs: jewels_str, stones_str
+ *
+ * Outputs: int
+ *
+ * Edge Cases: 56 total english chars, 50 max length of string
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+int numJewelsInStones(char *jewels, char *stones) {
+    int nums[123] = {0};
+    int n = 0;
+    char *ptr;
+
+    ptr = jewels;
+    while (*ptr != '\0') {
+        nums[(char)*ptr++] = 1;
+    }
+
+    ptr = stones;
+    while (*ptr != '\0') {
+        if (nums[(char)*ptr++] == 1) {
+            ++n;
+        }
+    }
+
+    return n;
+}
