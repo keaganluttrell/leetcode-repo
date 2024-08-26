@@ -6,13 +6,12 @@
 
 int main(int argc, char *argv[]) {
 
-    char *s1[] = {"aA", "z"};
-    char *s2[] = {"aAAbbb", "ZZ"};
-    int expected[] = {3, 0};
+    char *s1[] = {"abcabcbb", "bbbbb", "pwwkew", "", "a", "au"};
+    int expected[] = {3, 1, 3, 0, 1, 2};
     int actual;
 
-    for (int i = 0; i < 2; ++i) {
-        actual = numJewelsInStones(s1[i], s2[i]);
+    for (int i = 0; i < 6; ++i) {
+        actual = lengthOfLongestSubstring(s1[i]);
         printf("e: %d, a: %d\n", expected[i], actual);
     }
 

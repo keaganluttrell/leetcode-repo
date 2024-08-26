@@ -12,4 +12,5 @@ int maxNumberOfBalloons(char *text);
 int findMaxLength(int *nums, int numsSize);
 bool canConstruct(char *ransomNote, char *magazine);
 int numJewelsInStones(char *jewels, char *stones);
+int lengthOfLongestSubstring(char *s);
 #endif

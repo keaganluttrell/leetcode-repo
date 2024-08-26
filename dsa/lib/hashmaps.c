@@ -551,3 +551,57 @@ int numJewelsInStones(char *jewels, char *stones) {
 
     return n;
 }
+
+/*
+ * Define the Problem: given a string s, find the length
+ * of the longest substring without repeating chars.
+ *
+ * Constraints:
+ * 0 <= len(s) <= 5 * 10^4 == 50k
+ * s can be english letters, digits, symbols, spaces,
+ *
+ * Inputs: string
+ *
+ * Outputs: int
+ *
+ * Edge Cases:
+ * empty string -> return 0
+ * string with single char or single repeating char
+ * ex: "a" or "aaaaaaaaaaaaaaaa" = 1
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ *
+ *
+ * "abczbcdabaabb"
+ *  ^   ^
+ *
+ */
+int lengthOfLongestSubstring(char *s) {
+    int n = strlen(s);
+    int max = 0;
+    int i = 0;
+
+    int codes[128];
+    for (short c = 0; c < 128; ++c) {
+        codes[c] = -1;
+    }
+
+    for (int j = 0; j < n; ++j) {
+        char cc = s[j];
+        if (codes[cc] >= i) {
+            i = codes[cc] + 1;
+        }
+
+        codes[cc] = j;
+
+        int cl = j - i + 1;
+        if (cl > max) {
+            max = cl;
+        }
+    }
+
+    return max;
+}
