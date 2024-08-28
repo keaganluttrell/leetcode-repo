@@ -5,30 +5,24 @@
 
 int main(int argc, char *argv[]) {
 
-    struct ListNode head;
+    struct ListNode *head;
     struct ListNode *actual;
-    head.val = 0;
-    head.next = NULL;
+    struct ListNode *expected;
 
-    printf("i: 0 -- head\n");
+    int arr[9] = {1, 1, 1, 2, 2, 2, 3, 3, 3};
+    int exp[3] = {1, 2, 3};
 
-    struct ListNode *curr = &head;
-    for (int i = 1; i < 7; i++) {
+    head = array_to_list(arr, 9);
+    actual = array_to_list(arr, 9);
+    expected = array_to_list(exp, 3);
+    print_list(head, "original");
 
-        struct ListNode *node =
-            (struct ListNode *)malloc(sizeof(struct ListNode));
-        node->val = i;
-        node->next = NULL;
-        curr->next = node;
-        curr = curr->next;
-
-        actual = middleNode(&head);
-        if (actual == NULL) {
-            printf("Err: actual is null\n");
-            return 1;
-        } else {
-            printf("i: %d -- actual %d\n", i, actual->val);
-        }
+    actual = deleteDuplicates(actual);
+    if (actual == NULL) {
+        printf("actual is null\n");
+    } else {
+        print_list(expected, "expected");
+        print_list(actual, "actual  ");
     }
 
     return 0;
