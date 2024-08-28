@@ -3,15 +3,18 @@
 #include "linked-lists.h"
 
 /*
- * Define the Problem:
+ * Define the Problem: Given the head of a singly linked
+ * list, return the middle node of the linked list.
+ * If there are two, return the second middle ndoe.
  *
- * Constraints:
+ * Constraints: nodes range [1,100]
+ * node value is [1,100]
  *
- * Inputs:
+ * Inputs: head of a linked list.
  *
- * Outputs:
+ * Outputs: middle node of linked list.
  *
- * Edge Cases:
+ * Edge Cases: single node list, return head?
  *
  * Come up with a solution in pseudocode
  * Solve the problem
@@ -20,7 +23,17 @@
  */
 
 struct ListNode *middleNode(struct ListNode *head) {
-    struct ListNode *node = NULL;
+    if (head == NULL) {
+        return NULL;
+    }
 
-    return node;
+    struct ListNode *fast = head;
+    struct ListNode *slow = head;
+
+    while (fast != NULL && fast->next != NULL) {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+
+    return slow;
 }
