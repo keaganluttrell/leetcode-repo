@@ -1,19 +1,6 @@
-// #include "hashmaps.h"
-#include <stdio.h>
+// #include <stdio.h>
 // #include <stdlib.h>
 
-#include "hashmaps.h"
+// #include "linked-lists.h"
 
-int main(int argc, char *argv[]) {
-
-    char *s1[] = {"abcabcbb", "bbbbb", "pwwkew", "", "a", "au"};
-    int expected[] = {3, 1, 3, 0, 1, 2};
-    int actual;
-
-    for (int i = 0; i < 6; ++i) {
-        actual = lengthOfLongestSubstring(s1[i]);
-        printf("e: %d, a: %d\n", expected[i], actual);
-    }
-
-    return 0;
-}
+int main(int argc, char *argv[]) { return 0; }
