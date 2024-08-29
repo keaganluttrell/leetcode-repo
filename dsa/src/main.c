@@ -9,15 +9,15 @@ int main(int argc, char *argv[]) {
     struct ListNode *actual;
     struct ListNode *expected;
 
-    int arr[9] = {1, 1, 1, 2, 2, 2, 3, 3, 3};
-    int exp[3] = {1, 2, 3};
+    int arr[5] = {1, 2, 3, 4, 5};
+    int exp[5] = {1, 4, 3, 2, 5};
 
-    head = array_to_list(arr, 9);
-    actual = array_to_list(arr, 9);
-    expected = array_to_list(exp, 3);
+    head = array_to_list(arr, 5);
+    actual = array_to_list(arr, 5);
+    expected = array_to_list(exp, 5);
     print_list(head, "original");
 
-    actual = deleteDuplicates(actual);
+    actual = reverseBetween(actual, 2, 4);
     if (actual == NULL) {
         printf("actual is null\n");
     } else {

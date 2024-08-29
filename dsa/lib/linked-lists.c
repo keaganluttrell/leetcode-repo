@@ -38,6 +38,19 @@ struct ListNode *array_to_list(int *array, int sz) {
     return head;
 }
 
+struct ListNode *reverse_list(struct ListNode *head) {
+    struct ListNode *prev = NULL;
+    struct ListNode *curr = head;
+
+    while (curr != NULL) {
+        struct ListNode *next_node = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next_node;
+    }
+    return prev;
+}
+
 /*
  * Define the Problem: Given the head of a singly linked
  * list, return the middle node of the linked list.
@@ -114,4 +127,54 @@ struct ListNode *deleteDuplicates(struct ListNode *head) {
     }
 
     return head;
+}
+
+/*
+ * Define the Problem: Given a head of a singly linked list, and two integers
+ * right and left, where left <= right, reverse the nodes of the list from
+ * left to position right.
+ *
+ * Constraints:
+ * N = number of nodes
+ * -500 <= node.val <= 500
+ * 1 <= left <= right <= n
+ *
+ * Inputs: Head of Singly linked list, int left and int right
+ *
+ * Outputs: head of list
+ *
+ * Edge Cases:
+ * What if the ints are greater than the number of nodes?
+ * -- satisfied by the constraints
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+struct ListNode *reverseBetween(struct ListNode *head, int left, int right) {
+    if (left == right || head == NULL || head->next == NULL) {
+        return head;
+    }
+
+    struct ListNode dummy;
+    dummy.val = 0;
+    dummy.next = head;
+    struct ListNode *Left = &dummy;
+
+    for (int i = 1; i < left; ++i) {
+        Left = Left->next;
+    }
+
+    struct ListNode *curr = Left->next;
+    struct ListNode *next_node;
+
+    for (int i = left; i < right; ++i) {
+        next_node = curr->next;
+        curr->next = next_node->next;
+        next_node->next = Left->next;
+        Left->next = next_node;
+    }
+
+    return dummy.next;
 }
