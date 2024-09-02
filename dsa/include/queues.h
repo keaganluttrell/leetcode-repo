@@ -13,4 +13,6 @@ MovingAverage *movingAverageCreate(int size);
 double movingAverageNext(MovingAverage *obj, int val);
 void movingAverageFree(MovingAverage *obj);
 void print_moving_avg(MovingAverage *o);
+int *nextGreaterElement(int *nums1, int nums1Size, int *nums2, int nums2Size,
+                        int *returnSize);
 #endif

@@ -1,33 +1,29 @@
 #include <stdio.h>
-// #include <stdlib.h>
-#include <string.h>
+#include <stdlib.h>
+// #include <string.h>
 
 #include "queues.h"
 
 int main(int argc, char *argv[]) {
-    char *input[] = {"MovingAverage", "next", "next", "next", "next"};
-    int vals[] = {3, 1, 10, 3, 5};
-    int input_len = 5;
-    MovingAverage *MA_obj;
 
-    for (int i = 0; i < input_len; ++i) {
-        char *fn = input[i];
-        int val = vals[i];
+    int nums1[] = {4, 1, 2};
+    int nums2[] = {1, 3, 4, 2};
+    int exp[] = {-1, 3, -1};
+    int return_sz;
+    int *actual = nextGreaterElement(nums1, 3, nums2, 4, &return_sz);
 
-        if (strcmp(fn, "MovingAverage") == 0) {
-            MA_obj = movingAverageCreate(val);
-
-        } else if (strcmp(fn, "next") == 0) {
-
-            double result = movingAverageNext(MA_obj, val);
-            print_moving_avg(MA_obj);
-            printf("Result:\t%f\n-------\n", result);
-        } else {
-            printf("err: unknown fn\n");
-        }
+    printf("Expected: ");
+    for (int i = 0; i < 3; ++i) {
+        printf("%d ", exp[i]);
     }
 
-    movingAverageFree(MA_obj);
+    printf("\n");
+    printf("Actual  : ");
+    for (int i = 0; i < return_sz; ++i) {
+        printf("%d ", actual[i]);
+    }
+    printf("\n");
+    free(actual);
 
     return 0;
 }
