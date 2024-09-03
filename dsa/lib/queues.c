@@ -130,3 +130,71 @@ int *nextGreaterElement(int *nums1, int nums1Size, int *nums2, int nums2Size,
 
     return returnArray;
 }
+
+/*
+ * Define the Problem:
+ * Design an algorithm that collects daily price quotes for some stock and
+ * returns the span of that stock's price for the current day. The span of the
+ * stock's price in one day is the maximum number of consecutive days (starting
+ * from that day and going backward) for which the stock price was less than or
+ * equal to the price of that day.
+ *
+ * Constraints:
+ * 1 <= price <= 105
+ * At most 10^4 calls will be made to next. (10,000);
+ *
+ * Inputs: SP obj and int price
+ *
+ * Outputs: int (number of days since);
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */           // pop
+// ct  1,  1,  1,  2,  1,  4
+// { 100, 80, 60, 70, 60, 75, 85 };
+//                    ^
+// stack [ 0, 6 ]
+// resp  [ 1, 1, 1, 2, 1, 4, 6];
+
+StockSpanner *stockSpannerCreate() {
+    StockSpanner *sp = (StockSpanner *)malloc(sizeof(StockSpanner));
+
+    // store price values
+    sp->values = (int *)malloc(STOCK_SPANNER_MAX * sizeof(int));
+    sp->index = 0;
+
+    // store index of prices values as a stack
+    sp->stack = (int *)malloc(STOCK_SPANNER_MAX * sizeof(int));
+    sp->top = -1;
+    return sp;
+}
+
+int stockSpannerNext(StockSpanner *obj, int price) {
+
+    while (obj->top > -1 && price > obj->values[obj->stack[obj->top]]) {
+        // pop
+        --obj->top;
+    }
+
+    // push to stack
+    obj->stack[++obj->top] = obj->index;
+    // push to values
+    obj->values[obj->index] = price;
+    // set next index
+    ++obj->index;
+
+    if (obj->top == 0) {
+        return obj->index;
+    }
+    return obj->index - obj->stack[obj->top - 1] - 1;
+}
+
+void stockSpannerFree(StockSpanner *obj) {
+    free(obj->values);
+    free(obj->stack);
+    free(obj);
+}
