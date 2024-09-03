@@ -175,7 +175,7 @@ StockSpanner *stockSpannerCreate() {
 
 int stockSpannerNext(StockSpanner *obj, int price) {
 
-    while (obj->top > -1 && price > obj->values[obj->stack[obj->top]]) {
+    while (obj->top > -1 && price >= obj->values[obj->stack[obj->top]]) {
         // pop
         --obj->top;
     }
@@ -190,7 +190,7 @@ int stockSpannerNext(StockSpanner *obj, int price) {
     if (obj->top == 0) {
         return obj->index;
     }
-    return obj->index - obj->stack[obj->top - 1] - 1;
+    return obj->index - obj->stack[obj->top - 1];
 }
 
 void stockSpannerFree(StockSpanner *obj) {
