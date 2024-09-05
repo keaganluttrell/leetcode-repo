@@ -95,12 +95,64 @@ void dfs_free(BTNode *node) {
 void free_BTNode(BTNode *node) { dfs_free(node); }
 /*
  * Define the Problem:
+ * Given a binary tree, find its minimum depth.
+ * The minimum depth is the number of nodes along the shortest path
+ * from the root node down to the nearest leaf node.
  *
  * Constraints:
+ * Range of Nodes = [0, 105]
+ * -1000 <= Node.val <= 1000
  *
- * Inputs:
+ * Inputs: Binary Tree
  *
- * Outputs:
+ * Outputs: Int
+ *
+ * Edge Cases: Empty Tree
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+int minDepth(struct TreeNode *node) {
+    if (node == NULL) {
+        return 0;
+    }
+
+    if (node->left == NULL && node->right == NULL) {
+        return 1;
+    }
+
+    int left = minDepth(node->left);
+    int right = minDepth(node->right);
+
+    if (left == 0) {
+        return right + 1;
+    } else if (right == 0) {
+        return left + 1;
+    } else if (left < right) {
+        return left + 1;
+    } else {
+        return right + 1;
+    }
+}
+
+/*
+ * Define the Problem:
+ *  Given the root of a binary tree, find the maximum value v
+ *  for which there exist different nodes a and b where
+ *  v = |a.val - b.val| and a is an ancestor of b.
+ *
+ *  A node a is an ancestor of b if either: any child of a is
+ *  equal to b or any child of a is an ancestor of b.
+ *
+ * Constraints:
+ * The number of nodes in the tree is in the range [2, 5000]
+ * 0 <= Node.val <= 105
+ *
+ * Inputs: Binary Tree
+ *
+ * Outputs: Int
  *
  * Edge Cases:
  *
@@ -109,3 +161,31 @@ void free_BTNode(BTNode *node) { dfs_free(node); }
  * Analyze Performance
  * Refactor to Optimal Solution
  */
+
+//     0
+//    / \
+//   1   2
+//  / \ / \
+// 3  4 5  6
+//
+int mad_worker(struct TreeNode *root, int min_val, int max_val) {
+    if (root == NULL) {
+        return max_val - min_val;
+    }
+
+    if (root->val < min_val) {
+        min_val = root->val;
+    }
+    if (root->val > max_val) {
+        max_val = root->val;
+    }
+
+    int l_maxdiff = mad_worker(root->left, min_val, max_val);
+    int r_maxdiff = mad_worker(root->right, min_val, max_val);
+
+    return l_maxdiff > r_maxdiff ? l_maxdiff : r_maxdiff;
+}
+
+int maxAncestorDiff(struct TreeNode *root) {
+    return mad_worker(root, root->val, root->val);
+}

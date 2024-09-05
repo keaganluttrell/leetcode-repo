@@ -14,4 +14,13 @@ int max_depth(BTNode *node);
 void free_BTNode(BTNode *node);
 void dfs(BTNode *node);
 void bfs(BTNode *node);
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+int minDepth(struct TreeNode *root);
+int maxAncestorDiff(struct TreeNode *root);
 #endif

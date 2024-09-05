@@ -1,18 +1,28 @@
 #include <stdio.h>
-// #include <stdlib.h>
+#include <stdlib.h>
 
 #include "trees-graphs.h"
 
+struct TreeNode *create_node_x(int val, struct TreeNode *left,
+                               struct TreeNode *right) {
+    struct TreeNode *n = (struct TreeNode *)malloc(sizeof(struct TreeNode));
+    n->val = val;
+    n->left = left;
+    n->right = right;
+    return n;
+}
+
 int main(int argc, char *argv[]) {
 
-    int arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int sz = 10;
+    struct TreeNode *four = create_node_x(4, NULL, NULL);
+    struct TreeNode *three = create_node_x(3, NULL, NULL);
+    struct TreeNode *two = create_node_x(0, three, NULL);
+    struct TreeNode *one = create_node_x(2, NULL, two);
+    struct TreeNode *root = create_node_x(1, NULL, one);
 
-    BTNode *head = create_BTNode_from_array(arr, sz);
-    bfs(head);
-    printf("\n");
+    int actual = maxAncestorDiff(root);
 
-    free_BTNode(head);
+    printf("max %d\n", actual);
 
     return 0;
 }
