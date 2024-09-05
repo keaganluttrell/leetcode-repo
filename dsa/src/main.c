@@ -16,11 +16,11 @@ int main(int argc, char *argv[]) {
 
     struct TreeNode *four = create_node_x(4, NULL, NULL);
     struct TreeNode *three = create_node_x(3, NULL, NULL);
-    struct TreeNode *two = create_node_x(0, three, NULL);
-    struct TreeNode *one = create_node_x(2, NULL, two);
-    struct TreeNode *root = create_node_x(1, NULL, one);
+    struct TreeNode *two = create_node_x(2, NULL, NULL);
+    struct TreeNode *one = create_node_x(1, three, four);
+    struct TreeNode *root = create_node_x(0, one, two);
 
-    int actual = maxAncestorDiff(root);
+    int actual = diameterOfBinaryTree(root);
 
     printf("max %d\n", actual);
 

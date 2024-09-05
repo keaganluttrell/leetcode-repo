@@ -189,3 +189,44 @@ int mad_worker(struct TreeNode *root, int min_val, int max_val) {
 int maxAncestorDiff(struct TreeNode *root) {
     return mad_worker(root, root->val, root->val);
 }
+
+/*
+ * Define the Problem:
+ *
+ * Constraints:
+ *
+ * Inputs:
+ *
+ * Outputs:
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+
+int diameter_worker(struct TreeNode *root, int *max) {
+    if (root == NULL) {
+        return 0;
+    }
+
+    int left, right, total;
+    left = diameter_worker(root->left, max);
+    right = diameter_worker(root->right, max);
+
+    total = left + right;
+
+    if (total > *max) {
+        *max = total;
+    }
+
+    return right > left ? right + 1 : left + 1;
+}
+
+int diameterOfBinaryTree(struct TreeNode *root) {
+    int max = 0;
+    diameter_worker(root, &max);
+    return max;
+}
