@@ -93,6 +93,9 @@ void dfs_free(BTNode *node) {
 }
 
 void free_BTNode(BTNode *node) { dfs_free(node); }
+
+// DFS ////////////////////////////////////////
+
 /*
  * Define the Problem:
  * Given a binary tree, find its minimum depth.
@@ -192,8 +195,15 @@ int maxAncestorDiff(struct TreeNode *root) {
 
 /*
  * Define the Problem:
+ * Given the root of a binary tree, return the length of the diameter of the
+ * tree. The diameter of a binary tree is the length of the longest path between
+ * any two nodes in a tree. This path may or may not pass through the root. The
+ * length of a path between two nodes is represented by the number of edges
+ * between them.
  *
  * Constraints:
+ * The number of nodes in the tree is in the range [1, 10^4].
+ * -100 <= Node.val <= 100
  *
  * Inputs:
  *
@@ -215,7 +225,6 @@ int diameter_worker(struct TreeNode *root, int *max) {
     int left, right, total;
     left = diameter_worker(root->left, max);
     right = diameter_worker(root->right, max);
-
     total = left + right;
 
     if (total > *max) {
@@ -230,3 +239,22 @@ int diameterOfBinaryTree(struct TreeNode *root) {
     diameter_worker(root, &max);
     return max;
 }
+
+// BFS ////////////////////////////////////////////////
+/*
+ * Define the Problem:
+ *
+ * Constraints:
+ *
+ * Inputs:
+ *
+ * Outputs:
+ *
+ * Edge Cases:
+ *:warn("%s");
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+int deepestLeavesSum(struct TreeNode *root) {}

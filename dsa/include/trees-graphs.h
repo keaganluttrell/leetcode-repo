@@ -24,4 +24,5 @@ struct TreeNode {
 int minDepth(struct TreeNode *root);
 int maxAncestorDiff(struct TreeNode *root);
 int diameterOfBinaryTree(struct TreeNode *root);
+int deepestLeavesSum(struct TreeNode *root);
 #endif
