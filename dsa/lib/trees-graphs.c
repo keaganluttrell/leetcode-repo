@@ -243,12 +243,16 @@ int diameterOfBinaryTree(struct TreeNode *root) {
 // BFS ////////////////////////////////////////////////
 /*
  * Define the Problem:
+ * Given the root of a binary tree, return the sum of values of
+ * its deepest leaves.
  *
  * Constraints:
+ * Range [1,10^4]
+ * 1 <= Node.val <= 100
  *
- * Inputs:
+ * Inputs: tree node
  *
- * Outputs:
+ * Outputs: int
  *
  * Edge Cases:
  *:warn("%s");
@@ -257,4 +261,60 @@ int diameterOfBinaryTree(struct TreeNode *root) {
  * Analyze Performance
  * Refactor to Optimal Solution
  */
-int deepestLeavesSum(struct TreeNode *root) {}
+int deepestLeavesSum2(struct TreeNode *root) {
+    if (root == NULL) {
+        return 0;
+    }
+    struct TreeNode *q[10000];
+
+    int front = 0;
+    int rear = 0;
+
+    q[rear++] = root;
+    int curr_lvl_sum = 0;
+
+    while (front < rear) {
+        int lvl_sz = rear - front;
+        curr_lvl_sum = 0;
+
+        for (int i = 0; i < lvl_sz; i++) {
+            struct TreeNode *curr = q[front++];
+
+            curr_lvl_sum += curr->val;
+
+            if (curr->left != NULL) {
+                q[rear++] = curr->left;
+            }
+
+            if (curr->right != NULL) {
+                q[rear++] = curr->right;
+            }
+        }
+    }
+
+    return curr_lvl_sum;
+}
+
+void dfs_worker(struct TreeNode *root, int depth, int *max_depth, int *sum) {
+    if (root == NULL) {
+        return;
+    }
+
+    if (depth == *max_depth) {
+        *sum += root->val;
+
+    } else if (depth > *max_depth) {
+        *sum = root->val;
+        *max_depth = depth;
+    }
+
+    dfs_worker(root->left, depth + 1, max_depth, sum);
+    dfs_worker(root->right, depth + 1, max_depth, sum);
+}
+
+int deepestLeavesSum(struct TreeNode *root) {
+    int max_depth = 0;
+    int sum = 0;
+    dfs_worker(root, 0, &max_depth, &sum);
+    return sum;
+}

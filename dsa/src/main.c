@@ -20,9 +20,9 @@ int main(int argc, char *argv[]) {
     struct TreeNode *one = create_node_x(1, three, four);
     struct TreeNode *root = create_node_x(0, one, two);
 
-    int actual = diameterOfBinaryTree(root);
+    int actual = deepestLeavesSum(root);
 
-    printf("max %d\n", actual);
+    printf("answer: %d\n", actual);
 
     return 0;
 }
