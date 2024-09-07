@@ -318,3 +318,147 @@ int deepestLeavesSum(struct TreeNode *root) {
     dfs_worker(root, 0, &max_depth, &sum);
     return sum;
 }
+
+// Create a zig zag search function
+//
+// Constraints:
+// The number of nodes in the tree is in the range [0, 2000].
+// -100 <= Node.val <= 100
+
+#define ZIGZAG_MAX 2001
+
+int **zigzagLevelOrder2(struct TreeNode *root, int *returnSize,
+                        int **returnColumnSizes) {
+    if (!root) {
+        *returnSize = 0;
+        return NULL;
+    }
+
+    struct TreeNode *q[ZIGZAG_MAX];
+    int front = 0, rear = 0;
+    bool flip = false;
+
+    q[rear++] = root;
+
+    int **result = (int **)malloc(ZIGZAG_MAX * sizeof(int *));
+    *returnColumnSizes = (int *)malloc(ZIGZAG_MAX * sizeof(int));
+    *returnSize = 0;
+
+    while (front < rear) {
+        int lvl_size = rear - front;
+        result[*returnSize] = (int *)malloc(lvl_size * sizeof(int));
+        (*returnColumnSizes)[*returnSize] = lvl_size;
+
+        if (flip) {
+            for (int i = 0; i < lvl_size; i++) {
+                result[*returnSize][i] = q[front + lvl_size - 1 - i]->val;
+            }
+        } else {
+            for (int i = 0; i < lvl_size; i++) {
+                result[*returnSize][i] = q[front + i]->val;
+            }
+        }
+
+        for (int i = 0; i < lvl_size; i++) {
+            struct TreeNode *curr = q[front++];
+            if (curr->left)
+                q[rear++] = curr->left;
+            if (curr->right)
+                q[rear++] = curr->right;
+        }
+
+        flip = !flip; // Toggle flip for zigzag behavior
+        (*returnSize)++;
+    }
+
+    return result;
+}
+
+typedef struct {
+    struct TreeNode **data;
+    int front, rear, capacity;
+} Deque;
+
+Deque *create_deque(int capacity) {
+    Deque *deque = (Deque *)malloc(sizeof(Deque));
+    deque->data =
+        (struct TreeNode **)malloc(capacity * sizeof(struct TreeNode *));
+    deque->front = capacity / 2; // Start front in the middle
+    deque->rear = capacity / 2;
+    deque->capacity = capacity;
+    return deque;
+}
+
+bool is_empty(Deque *deque) { return deque->front == deque->rear; }
+
+void enqueue_front(Deque *deque, struct TreeNode *node) {
+    deque->data[--deque->front] = node;
+}
+
+void enqueue_rear(Deque *deque, struct TreeNode *node) {
+    deque->data[deque->rear++] = node;
+}
+
+struct TreeNode *dequeue_front(Deque *deque) {
+    return deque->data[deque->front++];
+}
+
+struct TreeNode *dequeue_rear(Deque *deque) {
+    return deque->data[--deque->rear];
+}
+
+void free_deque(Deque *deque) {
+    free(deque->data);
+    free(deque);
+}
+
+int **zigzagLevelOrder(struct TreeNode *root, int *returnSize,
+                       int **returnColumnSizes) {
+    if (!root) {
+        *returnSize = 0;
+        return NULL;
+    }
+
+    Deque *deque = create_deque(ZIGZAG_MAX);
+    enqueue_rear(deque, root);
+
+    int **result = (int **)malloc(ZIGZAG_MAX * sizeof(int *));
+    *returnColumnSizes = (int *)malloc(ZIGZAG_MAX * sizeof(int));
+    *returnSize = 0;
+    bool left_to_right = true;
+
+    while (!is_empty(deque)) {
+        int level_size = deque->rear - deque->front;
+        result[*returnSize] = (int *)malloc(level_size * sizeof(int));
+        (*returnColumnSizes)[*returnSize] = level_size;
+
+        for (int i = 0; i < level_size; ++i) {
+            struct TreeNode *node;
+            if (left_to_right) {
+                node = dequeue_front(deque);
+            } else {
+                node = dequeue_rear(deque);
+            }
+
+            result[*returnSize][i] = node->val;
+
+            if (left_to_right) {
+                if (node->left)
+                    enqueue_rear(deque, node->left);
+                if (node->right)
+                    enqueue_rear(deque, node->right);
+            } else {
+                if (node->right)
+                    enqueue_front(deque, node->right);
+                if (node->left)
+                    enqueue_front(deque, node->left);
+            }
+        }
+
+        left_to_right = !left_to_right; // Switch direction for next level
+        (*returnSize)++;
+    }
+
+    free_deque(deque);
+    return result;
+}

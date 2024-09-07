@@ -25,4 +25,6 @@ int minDepth(struct TreeNode *root);
 int maxAncestorDiff(struct TreeNode *root);
 int diameterOfBinaryTree(struct TreeNode *root);
 int deepestLeavesSum(struct TreeNode *root);
+int **zigzagLevelOrder(struct TreeNode *root, int *returnSize,
+                       int **returnColumnSizes);
 #endif
