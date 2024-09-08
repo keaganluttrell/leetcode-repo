@@ -27,4 +27,5 @@ int diameterOfBinaryTree(struct TreeNode *root);
 int deepestLeavesSum(struct TreeNode *root);
 int **zigzagLevelOrder(struct TreeNode *root, int *returnSize,
                        int **returnColumnSizes);
+struct TreeNode *insertIntoBST(struct TreeNode *root, int val);
 #endif

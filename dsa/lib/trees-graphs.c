@@ -1,4 +1,5 @@
 #include "trees-graphs.h"
+#include <cstdio>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -461,4 +462,37 @@ int **zigzagLevelOrder(struct TreeNode *root, int *returnSize,
 
     free_deque(deque);
     return result;
+}
+
+/*
+ * Define the Problem: Inser into BST
+ *
+ * Constraints:
+ *
+ * Inputs:
+ *
+ * Outputs:
+ *
+ * Edge Cases:
+ *
+ * Come up with a solution in pseudocode
+ * Solve the problem
+ * Analyze Performance
+ * Refactor to Optimal Solution
+ */
+
+struct TreeNode *insertIntoBST(struct TreeNode *root, int val) {
+    if (root == NULL) {
+        struct TreeNode *node = calloc(1, sizeof(struct TreeNode));
+        node->left = NULL;
+        node->right = NULL;
+        node->val = val;
+        root = node;
+    } else if (val < root->val) {
+        root->left = insertIntoBST(root->left, val);
+    } else {
+        root->right = insertIntoBST(root->right, val);
+    }
+
+    return root;
 }
