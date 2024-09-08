@@ -1,5 +1,6 @@
 #include "trees-graphs.h"
-#include <cstdio>
+#include <limits.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -495,4 +496,34 @@ struct TreeNode *insertIntoBST(struct TreeNode *root, int val) {
     }
 
     return root;
+}
+
+void dfs_closest(struct TreeNode *node, double target, int *closest,
+                 double *smallest_diff) {
+
+    if (node == NULL) {
+        return;
+    }
+
+    double curr_diff = fabs(node->val - target);
+    if (curr_diff < *smallest_diff) {
+        *smallest_diff = curr_diff;
+        *closest = node->val;
+    } else if (curr_diff == *smallest_diff) {
+        if (node->val < *closest) {
+            *closest = node->val;
+        }
+    }
+    if (target < node->val) {
+        dfs_closest(node->left, target, closest, smallest_diff);
+    } else {
+        dfs_closest(node->right, target, closest, smallest_diff);
+    }
+}
+
+int closestValue(struct TreeNode *root, double target) {
+    int closest = INT_MAX;
+    double smallest_diff = INT_MAX;
+    dfs_closest(root, target, &closest, &smallest_diff);
+    return closest;
 }
