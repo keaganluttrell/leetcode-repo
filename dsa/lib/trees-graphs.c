@@ -527,3 +527,33 @@ int closestValue(struct TreeNode *root, double target) {
     dfs_closest(root, target, &closest, &smallest_diff);
     return closest;
 }
+
+/*
+ * Constraints:
+ * 1 <= n <= 2 * 10^5
+ * 0 <= edges.length <= 2 * 10^5
+ * edges[i].length == 20
+ * 0 <= ui, vi <= n - 1
+ * ui != vi
+ * 0 <= source, destination <= n - 1
+ * There are no duplicate edges.
+ * There are no self edges.
+ *
+ * Input:
+ * n: number of edges
+ * **edges: int edges[edgesSize][edgesColSize]
+ * int: source node
+ * destination: destination node
+ */
+
+bool validPath(int n, int **edges, int edgesSize, int *edgesColSize, int source,
+               int destination) {
+
+    for (int i = 0; i < edgesSize; i++) {
+        int x = edges[i][0];
+        int y = edges[i][1];
+        printf("%d, %d", x, y);
+    }
+
+    return false;
+}

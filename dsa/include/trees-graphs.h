@@ -1,6 +1,7 @@
 
 #ifndef TREES_GRAPHS_H
 #define TREES_GRAPHS_H
+#include <stdbool.h>
 
 typedef struct BTNode {
     int val;
@@ -28,4 +29,6 @@ int deepestLeavesSum(struct TreeNode *root);
 int **zigzagLevelOrder(struct TreeNode *root, int *returnSize,
                        int **returnColumnSizes);
 struct TreeNode *insertIntoBST(struct TreeNode *root, int val);
+bool validPath(int n, int **edges, int edgesSize, int *edgesColSize, int source,
+               int destination);
 #endif
