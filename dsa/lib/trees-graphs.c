@@ -546,14 +546,56 @@ int closestValue(struct TreeNode *root, double target) {
  * destination: destination node
  */
 
+// Find the root of a node with path compression
+int find(int *parent, int node) {
+    if (parent[node] != node) {
+        parent[node] = find(parent, parent[node]); // Path compression
+    }
+    return parent[node];
+}
+
+// Union two nodes by connecting their roots
+void unionNodes(int *parent, int *rank, int node1, int node2) {
+    int root1 = find(parent, node1);
+    int root2 = find(parent, node2);
+
+    if (root1 != root2) {
+        if (rank[root1] > rank[root2]) {
+            parent[root2] = root1;
+        } else if (rank[root1] < rank[root2]) {
+            parent[root1] = root2;
+        } else {
+            parent[root2] = root1;
+            rank[root1]++;
+        }
+    }
+}
+
+// Main function to check if a valid path exists using Union-Find
 bool validPath(int n, int **edges, int edgesSize, int *edgesColSize, int source,
                int destination) {
+    // Initialize the parent array and rank array for Union-Find
+    int *parent = (int *)malloc(n * sizeof(int));
+    int *rank = (int *)calloc(n, sizeof(int));
 
+    // Each node is its own parent initially
+    for (int i = 0; i < n; i++) {
+        parent[i] = i;
+    }
+
+    // Union the nodes based on the edges
     for (int i = 0; i < edgesSize; i++) {
         int x = edges[i][0];
         int y = edges[i][1];
-        printf("%d, %d", x, y);
+        unionNodes(parent, rank, x, y);
     }
 
-    return false;
+    // Check if the source and destination are in the same connected component
+    bool result = find(parent, source) == find(parent, destination);
+
+    // Free the allocated memory
+    free(parent);
+    free(rank);
+
+    return result;
 }
