@@ -29,6 +29,22 @@ int deepestLeavesSum(struct TreeNode *root);
 int **zigzagLevelOrder(struct TreeNode *root, int *returnSize,
                        int **returnColumnSizes);
 struct TreeNode *insertIntoBST(struct TreeNode *root, int val);
+
+// Graphs
 bool validPath(int n, int **edges, int edgesSize, int *edgesColSize, int source,
                int destination);
+
+#define GRAPH_MAX 5001
+
+struct Node {
+    int val;
+    int *neighbors;
+    int i;
+    int capacity;
+};
+
+struct Node *new_node(int val);
+void add_neighbor(struct Node *x, struct Node *y);
+void traverse_graph(struct Node *node, struct Node **graph, bool *seen);
+int countComponents(int n, int **edges, int edgesSize, int *edgesColSize);
 #endif

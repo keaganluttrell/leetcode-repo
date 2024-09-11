@@ -599,3 +599,138 @@ bool validPath(int n, int **edges, int edgesSize, int *edgesColSize, int source,
 
     return result;
 }
+
+struct Node *new_node(int val) {
+    struct Node *n = malloc(sizeof(struct Node));
+    n->val = val;
+    n->capacity = 10; // Initial capacity for neighbors
+    n->neighbors = malloc(n->capacity * sizeof(int));
+    n->i = 0;
+    return n;
+}
+
+void add_neighbor(struct Node *x, struct Node *y) {
+    if (x == NULL || y == NULL) {
+        printf("add_neighbor: x or y is null\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Resize if necessary
+    if (x->i >= x->capacity) {
+        x->capacity *= 2;
+        x->neighbors = realloc(x->neighbors, x->capacity * sizeof(int));
+    }
+
+    x->neighbors[x->i++] = y->val;
+
+    if (y->i >= y->capacity) {
+        y->capacity *= 2;
+        y->neighbors = realloc(y->neighbors, y->capacity * sizeof(int));
+    }
+
+    y->neighbors[y->i++] = x->val;
+}
+
+void traverse_graph(struct Node *node, struct Node **graph, bool *seen) {
+    if (node == NULL || seen[node->val]) {
+        return;
+    }
+
+    seen[node->val] = true;
+
+    for (int n = 0; n < node->i; n++) {
+        traverse_graph(graph[node->neighbors[n]], graph, seen);
+    }
+}
+
+int countComponents_old(int n, int **edges, int edgesSize, int *edgesColSize) {
+    struct Node *graph[GRAPH_MAX] = {NULL};
+    int i;
+    int count = 0;
+
+    bool *seen = calloc(GRAPH_MAX, sizeof(bool));
+
+    // build out the graph
+    for (int i = 0; i < edgesSize; i++) {
+        int x = edges[i][0];
+        int y = edges[i][1];
+
+        if (graph[x] == NULL) {
+            graph[x] = new_node(x);
+        }
+        if (graph[y] == NULL) {
+            graph[y] = new_node(y);
+        }
+
+        add_neighbor(graph[x], graph[y]);
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (!seen[i]) {
+            if (graph[i] != NULL) {
+                traverse_graph(graph[i], graph, seen);
+            }
+            count++;
+        }
+    }
+
+    // Clean up memory
+    for (int i = 0; i < n; i++) {
+        if (graph[i] != NULL) {
+            free(graph[i]->neighbors);
+            free(graph[i]);
+        }
+    }
+    free(seen);
+
+    return count;
+}
+
+// Union two nodes by rank
+void union_nodes(int *parent, int *rank, int node1, int node2) {
+    int root1 = find(parent, node1);
+    int root2 = find(parent, node2);
+
+    if (root1 != root2) {
+        // Union by rank
+        if (rank[root1] > rank[root2]) {
+            parent[root2] = root1;
+        } else if (rank[root1] < rank[root2]) {
+            parent[root1] = root2;
+        } else {
+            parent[root2] = root1;
+            rank[root1]++;
+        }
+    }
+}
+
+// Main function to count components
+int countComponents(int n, int **edges, int edgesSize, int *edgesColSize) {
+    int *parent = malloc(n * sizeof(int));
+    int *rank = malloc(n * sizeof(int));
+    int components = n;
+
+    // Initialize parent and rank arrays
+    for (int i = 0; i < n; i++) {
+        parent[i] = i; // Initially, each node is its own parent
+        rank[i] = 0;   // Initially, the rank of each node is 0
+    }
+
+    // Process all edges
+    for (int i = 0; i < edgesSize; i++) {
+        int x = edges[i][0];
+        int y = edges[i][1];
+
+        // If the nodes are in different components, union them
+        if (find(parent, x) != find(parent, y)) {
+            union_nodes(parent, rank, x, y);
+            components--; // Reduce the number of components
+        }
+    }
+
+    // Clean up
+    free(parent);
+    free(rank);
+
+    return components;
+}
