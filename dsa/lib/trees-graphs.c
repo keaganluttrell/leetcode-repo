@@ -734,3 +734,63 @@ int countComponents(int n, int **edges, int edgesSize, int *edgesColSize) {
 
     return components;
 }
+
+/* Constraints
+ * m == grid.length    => gridSize
+ * n == grid[i].length => gridColSize
+ * 1 <= m, n <= 50     => MAX: 50X50 Matrix
+ * Matrix is Not Jagged
+ * grid[i][j] is either 0 or 1.
+ */
+bool in_bounds(int gridSize, int *gridColSize, int i, int j) {
+    return i >= 0 && i < gridSize && j >= 0 && j < *gridColSize;
+}
+
+void chart(int **grid, int gridSize, int *gridColSize, int *count, int i,
+           int j) {
+    // act on current index
+    (*count)++;
+    grid[i][j] = 2; // mark seen
+
+    // chart up
+    if (in_bounds(gridSize, gridColSize, i - 1, j) && grid[i - 1][j] == 1) {
+        chart(grid, gridSize, gridColSize, count, i - 1, j);
+    }
+
+    // chart down
+    if (in_bounds(gridSize, gridColSize, i + 1, j) && grid[i + 1][j] == 1) {
+        chart(grid, gridSize, gridColSize, count, i + 1, j);
+    }
+
+    // chart left
+    if (in_bounds(gridSize, gridColSize, i, j - 1) && grid[i][j - 1] == 1) {
+        chart(grid, gridSize, gridColSize, count, i, j - 1);
+    }
+
+    // chart right
+    if (in_bounds(gridSize, gridColSize, i, j + 1) && grid[i][j + 1] == 1) {
+        chart(grid, gridSize, gridColSize, count, i, j + 1);
+    }
+}
+
+int maxAreaOfIsland(int **grid, int gridSize, int *gridColSize) {
+    int max_area = 0;
+    int count;
+
+    for (int i = 0; i < gridSize; ++i) {
+        for (int j = 0; j < *gridColSize; ++j) {
+            if (grid[i][j] != 1) {
+                continue;
+            }
+
+            count = 0;
+            chart(grid, gridSize, gridColSize, &count, i, j);
+
+            if (count > max_area) {
+                max_area = count;
+            }
+        }
+    }
+
+    return max_area;
+}

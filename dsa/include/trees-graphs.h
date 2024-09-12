@@ -47,4 +47,5 @@ struct Node *new_node(int val);
 void add_neighbor(struct Node *x, struct Node *y);
 void traverse_graph(struct Node *node, struct Node **graph, bool *seen);
 int countComponents(int n, int **edges, int edgesSize, int *edgesColSize);
+int maxAreaOfIsland(int **grid, int gridSize, int *gridColSize);
 #endif
