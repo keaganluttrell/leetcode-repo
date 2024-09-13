@@ -794,3 +794,51 @@ int maxAreaOfIsland(int **grid, int gridSize, int *gridColSize) {
 
     return max_area;
 }
+
+int reachableNodes(int n, int **edges, int edgesSize, int *edgesColSize,
+                   int *restricted, int restrictedSize) {
+
+    int ct = 1;
+    int i, j;
+
+    int **nodes = malloc(n * sizeof(int *));
+
+    // init neighbors
+    for (i = 0; i < n; ++i) {
+        nodes[i] = malloc(n * sizeof(int));
+        for (j = 0; j < n; ++j) {
+            nodes[i][j] = 0;
+        }
+    }
+
+    // map neighbors
+    for (i = 0; i < edgesSize; ++i) {
+        int a = edges[i][0];
+        int b = edges[i][1];
+
+        int ar = 0;
+        int br = 0;
+
+        for (int r = 0; r < restrictedSize; ++r) {
+            if (a == restricted[r]) {
+                ar = 1;
+            }
+            if (b == restricted[r]) {
+                br = 1;
+            }
+        }
+
+        if (ar == 0 && br == 0) {
+            nodes[a][a] = 1;
+            nodes[b][b] = 1;
+        }
+    }
+
+    for (i = 1; i < n; ++i) {
+        if (nodes[i][i] == 1) {
+            ct++;
+        }
+    }
+
+    return ct;
+}
