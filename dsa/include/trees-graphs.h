@@ -50,4 +50,23 @@ int countComponents(int n, int **edges, int edgesSize, int *edgesColSize);
 int maxAreaOfIsland(int **grid, int gridSize, int *gridColSize);
 int reachableNodes(int n, int **edges, int edgesSize, int *edgesColSize,
                    int *restricted, int restrictedSize);
+
+// graph bfs
+#define MAX_QUEUE_SIZE 1000 // Adjust based on expected maze size
+
+typedef struct {
+    int row, col;
+} Position;
+
+typedef struct {
+    Position data[MAX_QUEUE_SIZE];
+    int front, rear, size;
+} Pos_Deque;
+Pos_Deque *createDeque();
+void enqueue(Pos_Deque *dq, int row, int col);
+Position dequeue(Pos_Deque *dq);
+bool isDequeEmpty(Pos_Deque *dq);
+void freeDeque(Pos_Deque *dq);
+int nearestExit(char **maze, int mazeSize, int *mazeColSize, int *entrance,
+                int entranceSize);
 #endif

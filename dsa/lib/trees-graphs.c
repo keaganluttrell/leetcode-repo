@@ -797,48 +797,150 @@ int maxAreaOfIsland(int **grid, int gridSize, int *gridColSize) {
 
 int reachableNodes(int n, int **edges, int edgesSize, int *edgesColSize,
                    int *restricted, int restrictedSize) {
+    int *parent = malloc(n * sizeof(int));
+    int *rank = malloc(n * sizeof(int));
+    int *restrictedSet = malloc(n * sizeof(int));
 
-    int ct = 1;
-    int i, j;
+    // Initialize DSU and restricted nodes set
+    for (int i = 0; i < n; ++i) {
+        parent[i] = i;
+        rank[i] = 0;
+        restrictedSet[i] = 0; // False by default
+    }
 
-    int **nodes = malloc(n * sizeof(int *));
+    // Mark restricted nodes
+    for (int i = 0; i < restrictedSize; ++i) {
+        restrictedSet[restricted[i]] = 1; // True if restricted
+    }
 
-    // init neighbors
-    for (i = 0; i < n; ++i) {
-        nodes[i] = malloc(n * sizeof(int));
-        for (j = 0; j < n; ++j) {
-            nodes[i][j] = 0;
+    // Union nodes that are not restricted
+    for (int i = 0; i < edgesSize; ++i) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+
+        // Only union if neither node is restricted
+        if (!restrictedSet[u] && !restrictedSet[v]) {
+            union_nodes(parent, rank, u, v);
         }
     }
 
-    // map neighbors
-    for (i = 0; i < edgesSize; ++i) {
-        int a = edges[i][0];
-        int b = edges[i][1];
+    // Count the number of reachable nodes from node 0
+    int rootZero = find(parent, 0);
+    int count = 0;
 
-        int ar = 0;
-        int br = 0;
+    for (int i = 0; i < n; ++i) {
+        if (!restrictedSet[i] && find(parent, i) == rootZero) {
+            count++;
+        }
+    }
 
-        for (int r = 0; r < restrictedSize; ++r) {
-            if (a == restricted[r]) {
-                ar = 1;
+    free(parent);
+    free(rank);
+    free(restrictedSet);
+
+    return count;
+}
+
+Pos_Deque *createDeque() {
+    Pos_Deque *dq = (Pos_Deque *)malloc(sizeof(Pos_Deque));
+    dq->front = dq->rear = 0;
+    dq->size = 0;
+    return dq;
+}
+
+void enqueue(Pos_Deque *dq, int row, int col) {
+    if (dq->size == MAX_QUEUE_SIZE) {
+        printf("Queue overflow\n");
+        exit(EXIT_FAILURE);
+    }
+    dq->data[dq->rear].row = row;
+    dq->data[dq->rear].col = col;
+    dq->rear = (dq->rear + 1) % MAX_QUEUE_SIZE;
+    dq->size++;
+}
+
+Position dequeue(Pos_Deque *dq) {
+    if (dq->size == 0) {
+        printf("Queue underflow\n");
+        exit(EXIT_FAILURE);
+    }
+    Position pos = dq->data[dq->front];
+    dq->front = (dq->front + 1) % MAX_QUEUE_SIZE;
+    dq->size--;
+    return pos;
+}
+
+bool isDequeEmpty(Pos_Deque *dq) { return dq->size == 0; }
+
+void freeDeque(Pos_Deque *dq) { free(dq); }
+
+bool __check_in_bounds(int mazeSize, int *mazeColSize, int row, int col) {
+    return row >= 0 && row < mazeSize && col >= 0 && col < *mazeColSize;
+}
+
+bool __check_entrance(int *entrance, int row, int col) {
+    return row == entrance[0] && col == entrance[1];
+}
+
+bool __check_empty_cell(char **maze, int row, int col) {
+    return maze[row][col] == '.';
+}
+
+bool __check_exit(char **maze, int mazeSize, int *mazeColSize, int row,
+                  int col) {
+    return (row == 0 || row == mazeSize - 1 || col == 0 ||
+            col == *mazeColSize - 1);
+}
+
+int nearestExit(char **maze, int mazeSize, int *mazeColSize, int *entrance,
+                int entranceSize) {
+    Pos_Deque *dq = createDeque();
+    int level = 0;
+
+    // Verify entrance is within bounds
+    if (!__check_in_bounds(mazeSize, mazeColSize, entrance[0], entrance[1])) {
+        printf("Entrance not in maze\n");
+        freeDeque(dq);
+        return -1;
+    }
+
+    // Mark entrance as visited
+    maze[entrance[0]][entrance[1]] = '#'; // Assuming '#' denotes visited cells
+
+    // Add entrance to the queue
+    enqueue(dq, entrance[0], entrance[1]);
+
+    while (!isDequeEmpty(dq)) {
+        int level_sz = dq->size;
+        ++level;
+
+        for (int i = 0; i < level_sz; ++i) {
+            Position pos = dequeue(dq);
+            int row = pos.row;
+            int col = pos.col;
+
+            // Check all four directions: up, down, left, right
+            int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+            for (int j = 0; j < 4; j++) {
+                int newRow = row + directions[j][0];
+                int newCol = col + directions[j][1];
+
+                if (__check_in_bounds(mazeSize, mazeColSize, newRow, newCol) &&
+                    maze[newRow][newCol] == '.') {
+
+                    if (__check_exit(maze, mazeSize, mazeColSize, newRow,
+                                     newCol)) {
+                        freeDeque(dq);
+                        return level;
+                    }
+                    // Mark as visited and enqueue
+                    maze[newRow][newCol] = '#';
+                    enqueue(dq, newRow, newCol);
+                }
             }
-            if (b == restricted[r]) {
-                br = 1;
-            }
-        }
-
-        if (ar == 0 && br == 0) {
-            nodes[a][a] = 1;
-            nodes[b][b] = 1;
         }
     }
 
-    for (i = 1; i < n; ++i) {
-        if (nodes[i][i] == 1) {
-            ct++;
-        }
-    }
-
-    return ct;
+    freeDeque(dq);
+    return -1; // No exit found
 }
