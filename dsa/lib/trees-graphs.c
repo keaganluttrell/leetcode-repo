@@ -944,3 +944,73 @@ int nearestExit(char **maze, int mazeSize, int *mazeColSize, int *entrance,
     freeDeque(dq);
     return -1; // No exit found
 }
+
+int snakesAndLadders(int **board, int boardSize, int *boardColSize) {
+    if (boardSize != *boardColSize) {
+        printf("board is not n x n, rows != cols\n");
+        return -1;
+    }
+
+    int arr_sz = (boardSize * boardSize) + 1;
+    int *arr = malloc(sizeof(int) * arr_sz);
+    if (arr == NULL) {
+        perror("failed to allocate memory");
+        exit(EXIT_FAILURE);
+    }
+
+    arr[0] = 0;
+    int i, j, a, f;
+    a = 1;
+    f = -1;
+
+    for (i = boardSize - 1; i >= 0; --i) {
+        if (++f % 2 == 0) {
+            for (j = 0; j < boardSize; ++j) {
+                arr[a++] = (board[i][j] == -1) ? a : board[i][j];
+            }
+        } else {
+            for (j = boardSize - 1; j >= 0; --j) {
+                arr[a++] = (board[i][j] == -1) ? a : board[i][j];
+            }
+        }
+    }
+
+    int *q = malloc(sizeof(int) * arr_sz);
+    int *seen = malloc(sizeof(int) * arr_sz);
+    for (i = 0; i < arr_sz; ++i) {
+        seen[i] = 0;
+    }
+
+    seen[1] = 1;
+    int front = 0;
+    int back = 0;
+    int levels = 0;
+
+    q[front++] = 1;
+
+    while (front > back) {
+        int level_size = front - back;
+        for (i = 0; i < level_size; ++i) {
+            int curr = q[back++];
+            for (j = 1; j <= 6 && curr + j < arr_sz; ++j) {
+                int next = arr[curr + j];
+                if (next == arr_sz - 1) {
+                    free(arr);
+                    free(q);
+                    free(seen);
+                    return levels + 1;
+                }
+                if (!seen[next]) {
+                    seen[next] = 1;
+                    q[front++] = next;
+                }
+            }
+        }
+        levels++;
+    }
+
+    free(arr);
+    free(q);
+    free(seen);
+    return -1;
+}
