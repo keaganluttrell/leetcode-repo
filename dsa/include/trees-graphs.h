@@ -70,4 +70,5 @@ void freeDeque(Pos_Deque *dq);
 int nearestExit(char **maze, int mazeSize, int *mazeColSize, int *entrance,
                 int entranceSize);
 int snakesAndLadders(int **board, int boardSize, int *boardColSize);
+int minMutation(char *startGene, char *endGene, char **bank, int bankSize);
 #endif

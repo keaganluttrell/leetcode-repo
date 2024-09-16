@@ -1,9 +1,11 @@
 #include "trees-graphs.h"
+#include <cstdio>
 #include <limits.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 BTNode *create_BTNode(int val) {
     BTNode *node = (BTNode *)malloc(sizeof(BTNode));
@@ -958,7 +960,6 @@ int snakesAndLadders(int **board, int boardSize, int *boardColSize) {
         exit(EXIT_FAILURE);
     }
 
-    arr[0] = 0;
     int i, j, a, f;
     a = 1;
     f = -1;
@@ -1012,5 +1013,117 @@ int snakesAndLadders(int **board, int boardSize, int *boardColSize) {
     free(arr);
     free(q);
     free(seen);
+    return -1;
+}
+
+bool __is_neighbor(char *a, char *b, int size) {
+    int ct = 0;
+    for (int i = 0; i < size; ++i) {
+        if (a[i] != b[i]) {
+            ct++;
+        }
+    }
+    return ct == 1;
+}
+
+int __find_index(char **bank, int bankSize, char *gene) {
+    for (int i = 0; i < bankSize; ++i) {
+        if (strcmp(gene, bank[i]) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+#define GENE_LENGTH 8
+int minMutation(char *startGene, char *endGene, char **bank, int bankSize) {
+    int i, j, neighbors_size;
+    bool startGeneFound = false;
+    neighbors_size = bankSize + 1;
+    for (i = 0; i < bankSize; ++i) {
+        if (strcmp(startGene, bank[i]) == 0) {
+            startGeneFound = true;
+            break;
+        }
+    }
+
+    if (startGeneFound) {
+        neighbors_size = bankSize;
+    }
+
+    char ***neighbors = malloc(sizeof(char **) * neighbors_size);
+    int *sizes = malloc(sizeof(int) * neighbors_size);
+    if (neighbors == NULL || sizes == NULL) {
+        printf("failed to allocate memory to neighbors or sizes arr\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0; i < neighbors_size; ++i) {
+        sizes[i] = -1;
+    }
+
+    for (i = 0; i < bankSize; ++i) {
+        neighbors[i] = malloc(sizeof(char *) * bankSize);
+        if (neighbors[i] == NULL) {
+            printf("failed to allocate memory to neihbors arr[%d]\n", i);
+            free(sizes);
+            free(neighbors);
+            exit(EXIT_FAILURE);
+        }
+
+        for (j = 0; j < bankSize; ++j) {
+            if (i == j) {
+                continue;
+            }
+            if (__is_neighbor(bank[i], bank[j], GENE_LENGTH)) {
+                neighbors[i][++sizes[i]] = strdup(bank[i]);
+            }
+        }
+    }
+
+    // find neighbors for start gene
+    if (!startGeneFound) {
+        for (i = 0; i < bankSize; ++i) {
+            if (__is_neighbor(startGene, bank[i], GENE_LENGTH)) {
+                neighbors[bankSize][++sizes[bankSize]] = strdup(bank[i]);
+            }
+        }
+    }
+
+    // start gene
+    int *q = malloc(sizeof(int) * neighbors_size * neighbors_size + 1);
+    int front = 0, back = 0, lvl = 0, lvl_size;
+
+    q[front++] = __find_index(bank, neighbors_size, startGene);
+
+    while (front > back) {
+        lvl_size = front - back;
+        for (i = 0; i < lvl_size; ++i) {
+            char *curr_gene = bank[q[back]];
+            char **curr_neighbors = neighbors[q[back]];
+            int sz = sizes[q[back]];
+            ++back;
+
+            for (j = 0; j < sz; ++j) {
+                if (strcmp(curr_gene, endGene) == 0) {
+
+                    for (i = 0; i < bankSize; ++i) {
+                        free(neighbors[i]);
+                    }
+                    free(neighbors);
+                    free(sizes);
+                    return lvl + 1;
+                }
+            }
+        }
+        ++lvl;
+    }
+
+    for (i = 0; i < bankSize; ++i) {
+        free(neighbors[i]);
+    }
+    free(neighbors);
+    free(sizes);
+
     return -1;
 }
