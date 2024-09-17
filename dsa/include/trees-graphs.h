@@ -71,4 +71,5 @@ int nearestExit(char **maze, int mazeSize, int *mazeColSize, int *entrance,
                 int entranceSize);
 int snakesAndLadders(int **board, int boardSize, int *boardColSize);
 int minMutation(char *startGene, char *endGene, char **bank, int bankSize);
+bool canReach(int *arr, int arrSize, int start);
 #endif

@@ -1059,66 +1059,72 @@ int minMutation(char *startGene, char *endGene, char **bank, int bankSize) {
     }
 
     for (i = 0; i < neighbors_size; ++i) {
-        sizes[i] = -1;
-    }
-
-    for (i = 0; i < bankSize; ++i) {
+        sizes[i] = 0;
         neighbors[i] = malloc(sizeof(char *) * bankSize);
         if (neighbors[i] == NULL) {
             printf("failed to allocate memory to neihbors arr[%d]\n", i);
-            free(sizes);
-            free(neighbors);
             exit(EXIT_FAILURE);
+        }
+    }
+
+    for (i = 0; i < bankSize; ++i) {
+
+        if (!startGeneFound) {
+            if (__is_neighbor(startGene, bank[i], GENE_LENGTH)) {
+                neighbors[bankSize][sizes[bankSize]++] = strdup(bank[i]);
+            }
         }
 
         for (j = 0; j < bankSize; ++j) {
-            if (i == j) {
-                continue;
-            }
-            if (__is_neighbor(bank[i], bank[j], GENE_LENGTH)) {
-                neighbors[i][++sizes[i]] = strdup(bank[i]);
+            if (i != j && __is_neighbor(bank[i], bank[j], GENE_LENGTH)) {
+                neighbors[i][sizes[i]++] = strdup(bank[j]);
             }
         }
     }
 
-    // find neighbors for start gene
-    if (!startGeneFound) {
-        for (i = 0; i < bankSize; ++i) {
-            if (__is_neighbor(startGene, bank[i], GENE_LENGTH)) {
-                neighbors[bankSize][++sizes[bankSize]] = strdup(bank[i]);
-            }
-        }
-    }
-
-    // start gene
     int *q = malloc(sizeof(int) * neighbors_size * neighbors_size + 1);
+    bool *visited = calloc(neighbors_size, sizeof(bool));
     int front = 0, back = 0, lvl = 0, lvl_size;
 
-    q[front++] = __find_index(bank, neighbors_size, startGene);
+    int start_index =
+        startGeneFound ? __find_index(bank, bankSize, startGene) : bankSize;
+
+    q[front++] = start_index;
+    visited[start_index] = true;
 
     while (front > back) {
         lvl_size = front - back;
         for (i = 0; i < lvl_size; ++i) {
-            char *curr_gene = bank[q[back]];
-            char **curr_neighbors = neighbors[q[back]];
-            int sz = sizes[q[back]];
-            ++back;
 
-            for (j = 0; j < sz; ++j) {
-                if (strcmp(curr_gene, endGene) == 0) {
+            int idx = q[back++];
+            char *curr_gene = idx == bankSize ? startGene : bank[idx];
 
-                    for (i = 0; i < bankSize; ++i) {
-                        free(neighbors[i]);
-                    }
-                    free(neighbors);
-                    free(sizes);
-                    return lvl + 1;
+            if (strcmp(curr_gene, endGene) == 0) {
+                free(q);
+                free(visited);
+                for (i = 0; i < neighbors_size; ++i) {
+                    free(neighbors[i]);
+                }
+                free(neighbors);
+                free(sizes);
+                return lvl;
+            }
+
+            char **curr_neighbors = neighbors[idx];
+            for (j = 0; j < sizes[idx]; ++j) {
+                int neighbor_idx =
+                    __find_index(bank, bankSize, curr_neighbors[j]);
+                if (neighbor_idx != -1 && !visited[neighbor_idx]) {
+                    visited[neighbor_idx] = true;
+                    q[front++] = neighbor_idx;
                 }
             }
         }
         ++lvl;
     }
 
+    free(q);
+    free(visited);
     for (i = 0; i < bankSize; ++i) {
         free(neighbors[i]);
     }
@@ -1126,4 +1132,57 @@ int minMutation(char *startGene, char *endGene, char **bank, int bankSize) {
     free(sizes);
 
     return -1;
+}
+
+// Given an array of non-negative integers arr, you are initially positioned
+// at start index of the array. When you are at index i, you can jump to
+// i + arr[i] or i - arr[i], check if you can reach any index with value 0.
+//
+// Notice that you can not jump outside of the array at any time.
+
+bool canReach(int *arr, int arrSize, int start) {
+    bool *visited = (bool *)malloc(sizeof(bool) * arrSize);
+    if (visited == NULL) {
+        perror("failed to allocate memory for visited array");
+        exit(EXIT_FAILURE);
+    }
+
+    memset(visited, false, arrSize * sizeof(bool));
+
+    int *queue = (int *)malloc(sizeof(int) * arrSize);
+    if (queue == NULL) {
+        perror("failed to allocate memory for BFS queue");
+        exit(EXIT_FAILURE);
+    }
+
+    int front = 0, back = 0;
+    queue[back++] = start;
+    visited[start] = true;
+
+    while (front < back) {
+        int curr = queue[front++];
+
+        if (arr[curr] == 0) {
+            free(visited);
+            free(queue);
+            return true;
+        }
+
+        int r = curr + arr[curr];
+        int l = curr - arr[curr];
+
+        if (r < arrSize && !visited[r]) {
+            queue[back++] = r;
+            visited[r] = true;
+        }
+
+        if (l >= 0 && !visited[l]) {
+            queue[back++] = l;
+            visited[l] = true;
+        }
+    }
+
+    free(visited);
+    free(queue);
+    return false;
 }
