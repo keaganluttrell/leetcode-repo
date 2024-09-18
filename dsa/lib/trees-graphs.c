@@ -1186,3 +1186,81 @@ bool canReach(int *arr, int arrSize, int start) {
     free(queue);
     return false;
 }
+
+int distance_squared(int x1, int y1, int x2, int y2) {
+    int dx = x1 - x2;
+    int dy = y1 - y2;
+    return dx * dx * dy * dy;
+}
+
+int maximumDetonation(int **bombs, int bombsSize, int *bombsColSize) {
+    // parents are the index of array
+    // the values are indexes of the children in bombs array
+    int **children = malloc(sizeof(int *) * bombsSize);
+    if (children == NULL) {
+        perror("failed to allocate memory for children array");
+        exit(EXIT_FAILURE);
+    }
+
+    int *children_sizes = malloc(sizeof(int) * bombsSize);
+    if (children_sizes == NULL) {
+        perror("failed to allocate memory for children sizes array");
+        exit(EXIT_FAILURE);
+    }
+
+    int i, j, r_squared;
+    for (i = 0; i < bombsSize; ++i) {
+        children_sizes[i] = 0;
+        children[i] = malloc(sizeof(int *) * 100);
+        if (children[i] == NULL) {
+            perror("failed to allocate memory for children[i] array");
+            exit(EXIT_FAILURE);
+        }
+
+        r_squared = bombs[i][2] * bombs[i][2];
+        for (j = 0; j < bombsSize; ++j) {
+            if (i == j) {
+                continue;
+            }
+            if (distance_squared(bombs[i][0], bombs[i][1], bombs[j][0],
+                                 bombs[j][1]) <= r_squared) {
+                children[i][children_sizes[i]++] = j;
+            }
+        }
+    }
+
+    int max = 0;
+    for (i = 0; i < bombsSize; ++i) {
+        int *q = malloc(sizeof(int) * 10000);
+        bool *visited = calloc(bombsSize, sizeof(bool));
+        int front = 0, back = 0, sum = 0, curr, child;
+        q[front++] = i;
+        visited[i] = true;
+        sum++;
+
+        while (front > back) {
+            curr = q[back++];
+
+            for (j = 0; j < children_sizes[curr]; ++j) {
+                child = children[curr][j];
+                if (!visited[child]) {
+                    q[front++] = child;
+                    visited[child] = true;
+                    sum++;
+                }
+            }
+        }
+        if (sum > max) {
+            max = sum;
+        }
+        free(q);
+        free(visited);
+    }
+
+    free(children_sizes);
+    for (i = 0; i < bombsSize; ++i) {
+        free(children[i]);
+    }
+    free(children);
+    return max;
+}
