@@ -1,5 +1,4 @@
 #include "trees-graphs.h"
-#include <cstdio>
 #include <limits.h>
 #include <math.h>
 #include <stdbool.h>
@@ -967,11 +966,13 @@ int snakesAndLadders(int **board, int boardSize, int *boardColSize) {
     for (i = boardSize - 1; i >= 0; --i) {
         if (++f % 2 == 0) {
             for (j = 0; j < boardSize; ++j) {
-                arr[a++] = (board[i][j] == -1) ? a : board[i][j];
+                arr[a] = (board[i][j] == -1) ? a : board[i][j];
+                a++;
             }
         } else {
             for (j = boardSize - 1; j >= 0; --j) {
-                arr[a++] = (board[i][j] == -1) ? a : board[i][j];
+                arr[a] = (board[i][j] == -1) ? a : board[i][j];
+                a++;
             }
         }
     }

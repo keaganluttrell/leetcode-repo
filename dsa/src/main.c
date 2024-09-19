@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "trees-graphs.h"
+#include "heaps.h"
 
-int main(int argc, char *argv[]) {}
+int main(int argc, char *argv[]) { fn(); }
