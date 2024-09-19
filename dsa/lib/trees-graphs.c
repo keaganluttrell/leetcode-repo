@@ -1264,3 +1264,66 @@ int maximumDetonation(int **bombs, int bombsSize, int *bombsColSize) {
     free(children);
     return max;
 }
+
+bool isOneLetterDiff(const char *word1, const char *word2) {
+    int diffCount = 0;
+    for (int i = 0; word1[i] != '\0'; ++i) {
+        if (word1[i] != word2[i]) {
+            diffCount++;
+            if (diffCount > 1) {
+                return false;
+            }
+        }
+    }
+    return diffCount == 1;
+}
+
+int ladderLength(char *beginWord, char *endWord, char **wordList,
+                 int wordListSize) {
+    bool endWordExists = false;
+    for (int i = 0; i < wordListSize; ++i) {
+        if (strcmp(wordList[i], endWord) == 0) {
+            endWordExists = true;
+            break;
+        }
+    }
+    if (!endWordExists) {
+        return 0;
+    }
+
+    int front = 0, back = 0, queueSize = 10000;
+    char **queue = malloc(queueSize * sizeof(char *));
+    int *steps = malloc(queueSize * sizeof(int));
+
+    queue[front++] = beginWord;
+    steps[back] = 1;
+
+    bool *visited = malloc(wordListSize * sizeof(bool));
+    memset(visited, 0, wordListSize * sizeof(bool));
+
+    while (back < front) {
+        char *currentWord = queue[back];
+        int currentSteps = steps[back++];
+
+        for (int i = 0; i < wordListSize; ++i) {
+            if (!visited[i] && isOneLetterDiff(currentWord, wordList[i])) {
+                if (strcmp(wordList[i], endWord) == 0) {
+                    free(queue);
+                    free(steps);
+                    free(visited);
+                    return currentSteps + 1;
+                }
+
+                queue[front++] = wordList[i];
+                steps[front - 1] = currentSteps + 1;
+                visited[i] = true;
+            }
+        }
+    }
+
+    free(queue);
+    free(steps);
+    free(visited);
+
+    return 0;
+}

@@ -73,4 +73,6 @@ int snakesAndLadders(int **board, int boardSize, int *boardColSize);
 int minMutation(char *startGene, char *endGene, char **bank, int bankSize);
 bool canReach(int *arr, int arrSize, int start);
 int maximumDetonation(int **bombs, int bombsSize, int *bombsColSize);
+int ladderLength(char *beginWord, char *endWord, char **wordList,
+                 int wordListSize);
 #endif
