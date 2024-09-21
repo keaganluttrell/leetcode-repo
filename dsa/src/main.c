@@ -1,16 +1,18 @@
-// #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "heaps.h"
 
 int main(int argc, char *argv[]) {
-    int *arr = malloc(sizeof(int) * 4);
-    int tmp[4] = {4, 3, 6, 7};
-    for (int i = 0; i < 4; ++i) {
+    int *arr = malloc(sizeof(int) * 3);
+    int tmp[3] = {2, 4, 3};
+    for (int i = 0; i < 3; ++i) {
         arr[i] = tmp[i];
     }
 
-    minStoneSum(arr, 4, 3);
+    int answer = connectSticks(arr, 3);
+
+    printf("answer: %d\n", answer);
 
     return 0;
 }
