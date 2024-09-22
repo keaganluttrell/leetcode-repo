@@ -117,33 +117,32 @@ void add(MinHeap *a, int x) {
     }
 }
 
-int peek(MinHeap *a) { return a->h[0]; }
-
-bool is_empty(MinHeap *a) { return a->len == 0; }
-
 int length(MinHeap *a) { return a->len; }
 
-void rm_top(MinHeap *a) {
+int poll(MinHeap *a) {
+    int r = a->h[0];
     a->h[0] = a->h[--a->len];
     minHeapify(a, 0);
+    return r;
 }
 
-int connectSticks(int *sticks, int n) {
-    int i, x, y, sum, cost;
+int peek(MinHeap *a) { return a->h[0]; }
 
-    MinHeap *heap;
+int connectSticks(int *sticks, int n) {
+
+    MinHeap *heap = malloc(sizeof(*heap));
     init(heap, n);
 
-    for (i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i) {
         add(heap, sticks[i]);
     }
 
+    int x, y, sum, cost;
+
     sum = 0;
     while (length(heap) > 1) {
-        x = peek(heap);
-        rm_top(heap);
-        y = peek(heap);
-        rm_top(heap);
+        x = poll(heap);
+        y = poll(heap);
 
         cost = x + y;
         add(heap, cost);
@@ -152,4 +151,18 @@ int connectSticks(int *sticks, int n) {
 
     free(heap);
     return sum;
+}
+
+int findKthLargest(int *nums, int n, int k) {
+    MinHeap *heap = malloc(sizeof(*heap));
+    init(heap, k + 1);
+
+    for (int i = 0; i < n; ++i) {
+        add(heap, nums[i]);
+        if (length(heap) == k + 1) {
+            poll(heap);
+        }
+    }
+
+    return peek(heap);
 }
