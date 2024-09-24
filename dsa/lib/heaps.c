@@ -1,5 +1,4 @@
 #include "heaps.h"
-#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -198,10 +197,6 @@ void PQ_swap(PQ_entry *a, PQ_entry *b) {
     *b = t;
 }
 
-int left(int i) { return 2 * i + 1; }
-int right(int i) { return 2 * i + 2; }
-int parent(int i) { return (i - 1) / 2; }
-
 void PQ_heapify(PQ *a, int i) {
     int large = i, l = left(i), r = right(i);
     if (l < a->len && a->h[l]->distance > a->h[large]->distance) {
@@ -276,4 +271,56 @@ int **kClosest(int **points, int pointsSize, int *pointsColSize, int k,
 
     *returnSize = k;
     return arr;
+}
+
+KthLargest *kthLargestCreate(int k, int *nums, int n) {
+    KthLargest *kl = malloc(sizeof(*kl));
+    kl->len = 0;
+    kl->size = k + 1;
+    kl->heap = malloc(sizeof(int) * kl->size);
+
+    for (int i = 0; i < n; ++i) {
+        kthLargestAdd(kl, nums[i]);
+    }
+
+    return kl;
+}
+
+void kthLargestHeapify(KthLargest *s, int index) {
+    int small = index, l = left(index), r = right(index);
+    if (l < s->len && s->heap[l] < s->heap[small]) {
+        small = l;
+    }
+    if (r < s->len && s->heap[r] < s->heap[small]) {
+        small = r;
+    }
+    if (index != small) {
+        swap(&s->heap[index], &s->heap[small]);
+        kthLargestHeapify(s, small);
+    }
+}
+
+void kthLargestPop(KthLargest *s) {
+    s->heap[0] = s->heap[--s->len];
+    kthLargestHeapify(s, 0);
+}
+
+int kthLargestPeek(KthLargest *s) { return s->heap[0]; }
+
+int kthLargestAdd(KthLargest *s, int val) {
+    int i = s->len++;
+    s->heap[i] = val;
+    while (i > 0 && s->heap[i] < s->heap[parent(i)]) {
+        swap(&s->heap[i], &s->heap[parent(i)]);
+        i = parent(i);
+    }
+    if (s->len >= s->size) {
+        kthLargestPop(s);
+    }
+    return kthLargestPeek(s);
+}
+
+void kthLargestFree(KthLargest *s) {
+    free(s->heap);
+    free(s);
 }
