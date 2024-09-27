@@ -85,7 +85,7 @@ int minSetSize(int *arr, int n) {
 
     qsort(set, 100001, sizeof(int), comparator);
 
-    for (i = 0, sum = 0, sets = 0; i < 10 && sum < (n / 2); ++i) {
+    for (i = 0, sum = 0, sets = 0; i < 100001 && sum < (n / 2); ++i) {
         sum += set[i];
         ++sets;
     }
