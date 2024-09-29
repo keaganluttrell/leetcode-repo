@@ -3,5 +3,6 @@
 int searchInsert(int *nums, int numsSize, int target);
 int *answerQueries(int *nums, int numsSize, int *queries, int queriesSize,
                    int *returnSize);
+int smallestDivisor(int *nums, int numsSize, int threshold);
 
 #endif

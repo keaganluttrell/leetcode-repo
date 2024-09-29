@@ -1,4 +1,5 @@
 #include "binarysearch.h"
+#include <stdlib.h>
 
 int searchInsert(int *nums, int n, int target) {
 
@@ -49,4 +50,25 @@ int *answerQueries(int *nums, int numsSize, int *queries, int queriesSize,
 
     free(prefixSum);
     return result;
+}
+
+int ceiling_div(int a, int b) { return (a + b - 1) / b; }
+
+int smallestDivisor(int *nums, int n, int threshold) {
+    int max, i, j, a;
+    for (i = 0, max = 0; i < n; ++i) {
+        if (nums[i] > max) {
+            max = nums[i];
+        }
+    }
+    for (i = max; i > 0; --i) {
+        a = 0;
+        for (j = 0; j < n; ++j) {
+            a += ceiling_div(nums[j], i);
+        }
+        if (a < threshold) {
+            return i;
+        }
+    }
+    return i;
 }
