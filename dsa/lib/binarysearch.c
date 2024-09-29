@@ -52,23 +52,35 @@ int *answerQueries(int *nums, int numsSize, int *queries, int queriesSize,
     return result;
 }
 
-int ceiling_div(int a, int b) { return (a + b - 1) / b; }
+int computeSum(int *nums, int n, int d, int t) {
+    int sum = 0, x = d - 1;
+    for (int i = 0; i < n; i++) {
+        sum += (nums[i] + x) / d;
+        if (sum > t) {
+            return sum;
+        }
+    }
+    return sum;
+}
 
 int smallestDivisor(int *nums, int n, int threshold) {
-    int max, i, j, a;
-    for (i = 0, max = 0; i < n; ++i) {
-        if (nums[i] > max) {
-            max = nums[i];
+    int low = 1, high = 0, mid;
+
+    for (int i = 0; i < n; ++i) {
+        if (nums[i] > high) {
+            high = nums[i];
         }
     }
-    for (i = max; i > 0; --i) {
-        a = 0;
-        for (j = 0; j < n; ++j) {
-            a += ceiling_div(nums[j], i);
-        }
-        if (a < threshold) {
-            return i;
+
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+
+        if (computeSum(nums, n, mid, threshold) <= threshold) {
+            high = mid - 1;
+        } else {
+            low = mid + 1;
         }
     }
-    return i;
+
+    return low;
 }
