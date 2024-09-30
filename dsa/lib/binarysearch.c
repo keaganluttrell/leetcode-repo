@@ -16,14 +16,16 @@ int searchInsert(int *nums, int n, int target) {
     return l;
 }
 
-int comparator(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
+int _comparator(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
 
 int *answerQueries(int *nums, int numsSize, int *queries, int queriesSize,
                    int *returnSize) {
     int *result = (int *)malloc(queriesSize * sizeof(int));
     *returnSize = queriesSize;
 
-    qsort(nums, numsSize, sizeof(int), comparator);
+    qsort(nums, numsSize, sizeof(int), _comparator);
 
     int *prefixSum = (int *)malloc(numsSize * sizeof(int));
     prefixSum[0] = nums[0];
@@ -83,4 +85,38 @@ int smallestDivisor(int *nums, int n, int threshold) {
     }
 
     return low;
+}
+
+int canDivide(int *sweetness, int sweetnessSize, int k, int minSweetness) {
+    int pieces = 0, currentSweetness = 0;
+
+    for (int i = 0; i < sweetnessSize; i++) {
+        currentSweetness += sweetness[i];
+
+        if (currentSweetness >= minSweetness) {
+            pieces++;
+            currentSweetness = 0;
+        }
+    }
+
+    return pieces >= k + 1;
+}
+
+int maximizeSweetness(int *sweetness, int sweetnessSize, int k) {
+    int low = 1, high = 0, mid;
+
+    for (int i = 0; i < sweetnessSize; i++) {
+        high += sweetness[i];
+    }
+
+    while (low <= high) {
+        mid = low + (high - low) / 2;
+
+        if (canDivide(sweetness, sweetnessSize, k, mid)) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return high;
 }
