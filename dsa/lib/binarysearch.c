@@ -1,4 +1,5 @@
 #include "binarysearch.h"
+#include <limits.h>
 #include <stdlib.h>
 
 int searchInsert(int *nums, int n, int target) {
@@ -119,4 +120,46 @@ int maximizeSweetness(int *sweetness, int sweetnessSize, int k) {
         }
     }
     return high;
+}
+
+int canSplit(int *nums, int numsSize, int k, int maxSum) {
+    int currentSum = 0;
+    int subarrays = 1;
+
+    for (int i = 0; i < numsSize; i++) {
+        if (currentSum + nums[i] > maxSum) {
+            subarrays++;
+            currentSum = nums[i];
+            if (subarrays > k) {
+                return 0;
+            }
+        } else {
+            currentSum += nums[i];
+        }
+    }
+
+    return 1;
+}
+
+int splitArray(int *nums, int n, int k) {
+    int low = 0, high = 0, mid, i;
+
+    for (i = 0; i < n; ++i) {
+        if (nums[i] > low) {
+            low = nums[i];
+        }
+        high += nums[i];
+    }
+
+    while (low < high) {
+        mid = low + (high - low) / 2;
+
+        if (canSplit(nums, n, k, mid)) {
+            high = mid;
+        } else {
+            low = mid + 1;
+        }
+    }
+
+    return low;
 }
