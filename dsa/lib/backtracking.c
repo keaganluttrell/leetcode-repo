@@ -39,4 +39,29 @@ int **allPathsSourceTarget(int **graph, int graphSize, int *graphColSize,
     return result;
 }
 
-char **letterCombinations(char *digits, int *returnSize) { return NULL; }
+char **letterCombinations(char *digits, int *returnSize) {
+    char *keypad[10] = {NULL};
+    keypad[0] = "";
+    keypad[1] = "";
+    keypad[2] = "abc";
+    keypad[3] = "def";
+    keypad[4] = "ghi";
+    keypad[5] = "jkl";
+    keypad[6] = "mno";
+    keypad[7] = "pqrs";
+    keypad[8] = "tuv";
+    keypad[9] = "wxyz";
+
+    int size = 0;
+    for (char *ptr = digits; *ptr != '\0'; ++ptr) {
+        int key = *ptr - '0';
+        int count = 0;
+        for (char *digit = keypad[key]; *digit != '\0'; ++digit, ++count)
+            ;
+        if (size == 0) {
+            size = count;
+        } else {
+            size *= count;
+        }
+    }
+}
