@@ -38,3 +38,5 @@ int **allPathsSourceTarget(int **graph, int graphSize, int *graphColSize,
     free(path);
     return result;
 }
+
+char **letterCombinations(char *digits, int *returnSize) { return NULL; }

@@ -3,4 +3,5 @@
 
 int **allPathsSourceTarget(int **graph, int graphSize, int *graphColSize,
                            int *returnSize, int **returnColumnSizes);
+char **letterCombinations(char *digits, int *returnSize);
 #endif
