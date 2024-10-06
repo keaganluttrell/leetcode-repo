@@ -1,5 +1,6 @@
 #include "backtracking.h"
 #include <stdlib.h>
+#include <string.h>
 
 void __dfs__(int **graph, int graphSize, int *graphColSize, int node,
              int target, int *path, int pathIndex, int **result,
@@ -39,6 +40,31 @@ int **allPathsSourceTarget(int **graph, int graphSize, int *graphColSize,
     return result;
 }
 
+int calculateTotalCombinations(const char *digits, char *keypad[]) {
+    int size = 1;
+    for (const char *ptr = digits; *ptr != '\0'; ++ptr) {
+        int key = *ptr - '0';
+        size *= strlen(keypad[key]);
+    }
+    return size;
+}
+
+void generateCombinations(char **output, char *digits, char *keypad[],
+                          char *currentCombination, int depth, int *index) {
+    if (digits[depth] == '\0') {
+        output[*index] = strdup(currentCombination);
+        (*index)++;
+        return;
+    }
+
+    int key = digits[depth] - '0';
+    for (char *ch = keypad[key]; *ch != '\0'; ++ch) {
+        currentCombination[depth] = *ch;
+        generateCombinations(output, digits, keypad, currentCombination,
+                             depth + 1, index);
+    }
+}
+
 char **letterCombinations(char *digits, int *returnSize) {
     char *keypad[10] = {NULL};
     keypad[0] = "";
@@ -52,16 +78,21 @@ char **letterCombinations(char *digits, int *returnSize) {
     keypad[8] = "tuv";
     keypad[9] = "wxyz";
 
-    int size = 0;
-    for (char *ptr = digits; *ptr != '\0'; ++ptr) {
-        int key = *ptr - '0';
-        int count = 0;
-        for (char *digit = keypad[key]; *digit != '\0'; ++digit, ++count)
-            ;
-        if (size == 0) {
-            size = count;
-        } else {
-            size *= count;
-        }
+    if (digits == NULL || *digits == '\0') {
+        *returnSize = 0;
+        return NULL;
     }
+
+    *returnSize = calculateTotalCombinations(digits, keypad);
+
+    char **output = malloc(sizeof(char *) * (*returnSize));
+    char currentCombination[strlen(digits) + 1];
+    currentCombination[strlen(digits)] = '\0';
+
+    int index = 0;
+    generateCombinations(output, digits, keypad, currentCombination, 0, &index);
+
+    return output;
 }
+
+char **generateParenthesis(int n, int *returnSize) {}
