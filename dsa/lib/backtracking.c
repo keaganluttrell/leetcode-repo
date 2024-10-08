@@ -95,4 +95,35 @@ char **letterCombinations(char *digits, int *returnSize) {
     return output;
 }
 
-char **generateParenthesis(int n, int *returnSize) {}
+void backtrack(char **result, int *returnSize, char *current, int depth,
+               int open, int close, int n) {
+    if (depth == 2 * n) {
+        result[*returnSize] = strdup(current);
+        (*returnSize)++;
+        return;
+    }
+
+    if (open < n) {
+        current[depth] = '(';
+        backtrack(result, returnSize, current, depth + 1, open + 1, close, n);
+    }
+
+    if (close < open) {
+        current[depth] = ')';
+        backtrack(result, returnSize, current, depth + 1, open, close + 1, n);
+    }
+}
+
+char **generateParenthesis(int n, int *returnSize) {
+    *returnSize = 0;
+
+    int maxCombinations = 1 << (2 * n);
+    char **result = (char **)malloc(maxCombinations * sizeof(char *));
+
+    char current[2 * n + 1];
+    current[2 * n] = '\0';
+
+    backtrack(result, returnSize, current, 0, 0, 0, n);
+
+    return result;
+}
